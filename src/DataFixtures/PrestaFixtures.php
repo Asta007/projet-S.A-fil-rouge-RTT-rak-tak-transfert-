@@ -11,7 +11,7 @@ class PrestaFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $i = 1;
-        while($i < 7){
+        while($i < 5){
             $prest = new Prestataires();
             $prest ->setMatricule("19-P".$i);
             $prest ->setDenomination("Bakh Yaye Solution");

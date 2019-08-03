@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/system/user")
@@ -18,77 +20,78 @@ class SystemUserController extends AbstractController
     /**
      * @Route("/", name="system_user_index", methods={"GET"})
      */
-    public function index(SystemUserRepository $systemUserRepository): Response
+    public function index(SystemUserRepository $systemUserRepository,SerializerInterface $ser)
     {
-        return $this->render('system_user/index.html.twig', [
-            'system_users' => $systemUserRepository->findAll(),
-        ]);
+        $result = $systemUserRepository->findAll();
+        $result = $ser->serialize($result,'json');
+        $response = new Response($result);
+        return($response);
     }
 
     /**
      * @Route("/new", name="system_user_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request,UserPasswordEncoderInterface $passencoder)
     {
-        $systemUser = new SystemUser();
-        $form = $this->createForm(SystemUserType::class, $systemUser);
-        $form->handleRequest($request);
+        $data = $request->getContent();
+        $data = json_decode($data,true);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $su = new SystemUser;
+            $su->setEmail($data['email']);
+
+            switch ($data['role']) {
+                case 10:
+                    $su->setRoles(["ROLE_SUPERADMINSYS"]);      
+                    break;
+                case 11:
+                    $su->setRoles(["ROLE_ADMINSYS"]);      
+                    break;
+                case 12:
+                    $su->setRoles(["ROLE_CAISSIER"]);      
+                    break;
+                default :
+                    $su->setRoles(["ROLE_ADMINSYS"]);      
+            }
+            $su->setPassword($passencoder->encodepassword($su,($data['password'])));            
+            $su->setNom($data['nom']);            
+            $su->setPrenom($data['prenom']);            
+            $su->setTelephone($data['telephone']); 
+
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($systemUser);
+            $entityManager->persist($su);
             $entityManager->flush();
 
-            return $this->redirectToRoute('system_user_index');
-        }
-
-        return $this->render('system_user/new.html.twig', [
-            'system_user' => $systemUser,
-            'form' => $form->createView(),
-        ]);
+        $response = new Response($this->get('serializer')->serialize($su,'json'));
+        return($response);
     }
 
     /**
      * @Route("/{id}", name="system_user_show", methods={"GET"})
      */
-    public function show(SystemUser $systemUser): Response
+    public function show(SystemUserRepository $systemUserRepository,SerializerInterface $ser,$id)
     {
-        return $this->render('system_user/show.html.twig', [
-            'system_user' => $systemUser,
-        ]);
+        $result = $systemUserRepository->find($id);
+        $result = $ser->serialize($result,'json');
+        $response = new Response($result);
+        return($response);
     }
 
     /**
      * @Route("/{id}/edit", name="system_user_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, SystemUser $systemUser): Response
+    public function edit(Request $request, SystemUser $systemUser)
     {
-        $form = $this->createForm(SystemUserType::class, $systemUser);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('system_user_index');
-        }
-
-        return $this->render('system_user/edit.html.twig', [
-            'system_user' => $systemUser,
-            'form' => $form->createView(),
-        ]);
+        
     }
+       
 
     /**
-     * @Route("/{id}", name="system_user_delete", methods={"DELETE"})
+     * @Route("/{id}", name="system_user_block", methods={"POST"})
      */
-    public function delete(Request $request, SystemUser $systemUser): Response
+    public function block($id)
     {
-        if ($this->isCsrfTokenValid('delete'.$systemUser->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($systemUser);
             $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('system_user_index');
     }
 }
