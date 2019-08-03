@@ -1,0 +1,27 @@
+[
+
+    {"for": "Add Prestataire"},
+    {
+        "denomination":"serign bi groupe",
+        "adress":"pikine",
+        "contacte":784587458,
+        "email":"teste@gmail.com",
+        "status":"blked"
+    },
+    
+    {"for": "edit Prestataire"},
+    {
+        "id":2,
+        "denomination":"serign bi groupe",
+        "adress":"pikine",
+        "contacte":784587458,
+        "email":"teste@gmail.com",
+        "status":"blked"
+    },
+
+    {"for": "New Compte"},
+    {
+        "matricule":"19-P4",
+        "solde":0
+    }
+]
