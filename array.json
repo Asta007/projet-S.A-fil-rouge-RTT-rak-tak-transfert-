@@ -9,6 +9,8 @@
         "status":"blked"
     },
     
+
+
     {"for": "edit Prestataire"},
     {
         "id":2,
@@ -19,9 +21,43 @@
         "status":"blked"
     },
 
+
+
     {"for": "New Compte"},
     {
         "matricule":"19-P4",
         "solde":0
+    },
+
+
+
+    {"for": "Add new user for a prestataire"},
+    {
+        "email":"myemail@gmail.com",
+        "role":10,
+        "password":"password1234",
+        "nom":"Mbaye",
+        "prenom":"Asta",
+        "adresse":"19-P4",
+        "telephone":784567895,
+        "cni":123569875,
+        "status":"dblked",
+        "prestataire":"19-P4",
+        "compte":"C1-P5"
     }
 ]
+
+
+
+
+
+
+
+
+======================
+10 = Super Admin
+11 = Admin system
+12 = Caissier
+
+20 = Admin prestataire
+21 = user prestataire

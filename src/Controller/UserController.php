@@ -9,6 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Prestataires;
+use App\Entity\Compte;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/user")
@@ -20,75 +23,81 @@ class UserController extends AbstractController
      */
     public function index(UserRepository $userRepository): Response
     {
-        return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
-        ]);
+        $result = $userRepository->findAll();
+        $result = $this->get('serializer')->serialize($result,'json');
+        $response = new Response($result);
+        return($response);
     }
 
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
-    {
+    public function new(Request $request, UserPasswordEncoderInterface $PE){
+        $data = $request->getContent();
+        $data = json_decode($data,true);
+
+        // recuperation de l'objet prestataire
+        $prestrepo = $this->getDoctrine()->getRepository(Prestataires::class)->findByMatricule($data['prestataire']);
+        $prestataire = ($prestrepo[0]);
+
+        
+        // recuperation de l'objet compte associé
+        $compterepo = $this->getDoctrine()->getRepository(Compte::class)->findByIntitule($data['compte']);
+        $compte = ($compterepo[0]);
+
+        
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
+        $user->setEmail($data['email']);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('user_index');
+        switch ($data['role']){
+            case 20:
+            $user->setRoles(["ROLE_ADMINPREST"]);
+            case 21:
+            $user->setRoles(["ROLE_USERPREST"]);
+            default : 
+            $user->setRoles(["ROLE_USERPREST"]);
         }
+        $user->setPassword($PE->encodePassword($user,($data['email'])));
+        $user->setNom($data['nom']);
+        $user->setPrenom($data['prenom']);
+        $user->setAdresse($data['adresse']);
+        $user->setTelephone($data['telephone']);
+        $user->setCni($data['cni']);
+        $user->setStatus($data['status']);
+        $user->setPrestataire($prestataire);
+        $user->setCompteAssocie($compte);
 
-        return $this->render('user/new.html.twig', [
-            'user' => $user,
-            'form' => $form->createView(),
-        ]);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $result = $this->get('serializer')->serialize($user,'json');
+        $response = new Response($result);
+        return($response);
     }
 
     /**
      * @Route("/{id}", name="user_show", methods={"GET"})
      */
-    public function show(User $user): Response
+    public function show(User $user)
     {
-        return $this->render('user/show.html.twig', [
-            'user' => $user,
-        ]);
+        
     }
 
     /**
      * @Route("/{id}/edit", name="user_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, User $user): Response
+    public function edit(Request $request, User $user)
     {
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('user_index');
-        }
-
-        return $this->render('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form->createView(),
-        ]);
+       
     }
 
     /**
-     * @Route("/{id}", name="user_delete", methods={"DELETE"})
+     * @Route("/{id}", name="block", methods={"POST"})
      */
-    public function delete(Request $request, User $user): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($user);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('user_index');
+    public function block(Request $request){
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($user);
+        $entityManager->flush();
     }
 }
