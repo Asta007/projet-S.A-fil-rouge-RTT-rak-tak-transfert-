@@ -56,6 +56,7 @@ class SystemUserController extends AbstractController
             $su->setNom($data['nom']);            
             $su->setPrenom($data['prenom']);            
             $su->setTelephone($data['telephone']); 
+            $su->setStatus("dblked"); 
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($su);
@@ -79,19 +80,73 @@ class SystemUserController extends AbstractController
     /**
      * @Route("/{id}/edit", name="system_user_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, SystemUser $systemUser)
+    public function edit(SystemUserRepository $systemUserRepository,Request $request,$id,SerializerInterface $ser,UserPasswordEncoderInterface $passencoder)
     {
+        $data = $request->getContent();
+        $data = json_decode($data,true);
+
+        $user = $systemUserRepository->find($id);
+        $user->setEmail($data['email']);
+        switch ($data['role']) {
+            case 10:
+                $user->setRoles(["ROLE_SUPERADMINSYS"]);      
+                break;
+            case 11:
+                $user->setRoles(["ROLE_ADMINSYS"]);      
+                break;
+            case 12:
+                $user->setRoles(["ROLE_CAISSIER"]);      
+                break;
+            default :
+                $user->setRoles(["ROLE_ADMINSYS"]);      
+        }
+        $user->setPassword($passencoder->encodepassword($user,($data['password'])));          
+        $user->setNom($data['nom']);            
+        $user->setPrenom($data['prenom']);            
+        $user->setTelephone($data['telephone']);
+        $user->setStatus("dblked");
         
-    }
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->flush();
+
+        $result = $ser->serialize($user,'json');
+        $response = new Response($result);
+        return($response);
+
+    }// done!
        
 
     /**
-     * @Route("/{id}", name="system_user_block", methods={"POST"})
+     * @Route("/{id}/block", name="system_user_block", methods={"POST"})
      */
-    public function block($id)
+    public function block($id,SystemUserRepository $systemUserRepository,SerializerInterface $ser)
     {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($systemUser);
-            $entityManager->flush();
+
+        $user = $systemUserRepository->find($id);   
+        $user->setStatus("blcked");
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->flush();
+
+        $result = $ser->serialize($user,'json');
+        $response = new Response($result);
+        return($response);
+    }
+
+    /**
+     * @Route("/{id}/deblock", name="system_user_deblock", methods={"POST"})
+     */
+    public function deblock($id,SystemUserRepository $systemUserRepository,SerializerInterface $ser)
+    {
+
+        $user = $systemUserRepository->find($id);   
+        $user->setStatus("dblcked");
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->flush();
+
+        $result = $ser->serialize($user,'json');
+        $response = new Response($result);
+        return($response);
     }
 }

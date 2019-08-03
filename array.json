@@ -44,6 +44,16 @@
         "status":"dblked",
         "prestataire":"19-P4",
         "compte":"C1-P5"
+    },
+
+    {"for": "Add new userto System "},
+    {
+        "email":"someemail@gmail.com",
+        "role":10,
+        "password":"password1234",
+        "nom":"Ababacar",
+        "prenom":"Asta",
+        "telephone":784567895
     }
 ]
 

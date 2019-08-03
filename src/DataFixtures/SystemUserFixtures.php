@@ -17,7 +17,7 @@ class SystemUserFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $i = 1;
+        $i = 0;
         while($i < 3){
             $u_system = new SystemUser;
             $u_system->setEmail("email".$i." @gamil.com");            
@@ -27,6 +27,7 @@ class SystemUserFixtures extends Fixture
             $u_system->setNom("nom".$i);            
             $u_system->setPrenom("prenom".$i);            
             $u_system->setTelephone(784568);            
+            $u_system->setStatus("dblked");            
 
             $manager->persist($u_system);
             $i++;
