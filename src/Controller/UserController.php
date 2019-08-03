@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Prestataires;
 use App\Entity\Compte;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/user")
@@ -21,18 +22,19 @@ class UserController extends AbstractController
     /**
      * @Route("/", name="user_index", methods={"GET"})
      */
-    public function index(UserRepository $userRepository): Response
+    public function index(UserRepository $userRepository,SerializerInterface $ser)
     {
         $result = $userRepository->findAll();
-        $result = $this->get('serializer')->serialize($result,'json');
+        $result = $ser->serialize($result,'json');
         $response = new Response($result);
         return($response);
-    }
+
+    }//done
 
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      */
-    public function new(Request $request, UserPasswordEncoderInterface $PE){
+    public function new(Request $request, UserPasswordEncoderInterface $PE,SerializerInterface $ser){
         $data = $request->getContent();
         $data = json_decode($data,true);
 
@@ -71,33 +73,55 @@ class UserController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        $result = $this->get('serializer')->serialize($user,'json');
+        $result = $ser->serialize($user,'json');
         $response = new Response($result);
         return($response);
-    }
+
+    }//done
 
     /**
      * @Route("/{id}", name="user_show", methods={"GET"})
      */
-    public function show(User $user)
+    public function show(UserRepository $userRepository,$id,SerializerInterface $ser)
     {
+        $result = $userRepository->find($id);
+        $result = $ser->serialize($result,'json');
+        $response = new Response($result);
+        return($response);
         
-    }
+    }//done
 
     /**
      * @Route("/{id}/edit", name="user_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, User $user)
     {
-       
+    
     }
 
     /**
-     * @Route("/{id}", name="block", methods={"POST"})
+     * @Route("/{id}/block", name="block", methods={"POST"})
      */
-    public function block(Request $request){
+    public function block(Request $request,UserRepository $userRepository,$id){
+        $user = $userRepository->find($id);
+        $user->setStatus("blked");
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($user);
         $entityManager->flush();
-    }
+
+    }//done
+
+    /**
+     * @Route("/{id}/dblock", name="deblock", methods={"POST"})
+     */
+    public function deblock(Request $request,UserRepository $userRepository,$id){
+        $user = $userRepository->find($id);
+        $user->setStatus("dblked");
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+    }//done 
 }

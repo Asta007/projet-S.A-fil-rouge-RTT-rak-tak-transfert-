@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New SystemUser{% endblock %}
+
+{% block body %}
+    <h1>Create new SystemUser</h1>
+
+    {{ include('system_user/_form.html.twig') }}
+
+    <a href="{{ path('system_user_index') }}">back to list</a>
+{% endblock %}

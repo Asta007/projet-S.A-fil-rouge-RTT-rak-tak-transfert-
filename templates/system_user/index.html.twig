@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SystemUser index{% endblock %}
+
+{% block body %}
+    <h1>SystemUser index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Password</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Telephone</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for system_user in system_users %}
+            <tr>
+                <td>{{ system_user.id }}</td>
+                <td>{{ system_user.email }}</td>
+                <td>{{ system_user.roles ? system_user.roles|json_encode : '' }}</td>
+                <td>{{ system_user.password }}</td>
+                <td>{{ system_user.nom }}</td>
+                <td>{{ system_user.prenom }}</td>
+                <td>{{ system_user.telephone }}</td>
+                <td>
+                    <a href="{{ path('system_user_show', {'id': system_user.id}) }}">show</a>
+                    <a href="{{ path('system_user_edit', {'id': system_user.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('system_user_new') }}">Create new</a>
+{% endblock %}
