@@ -17,22 +17,17 @@ class SystemUserFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $i = 0;
-        while($i < 3){
-            $u_system = new SystemUser;
-            $u_system->setEmail("email".$i." @gamil.com");            
-            $u_system->setRoles(["ROLE_SUPERADMINSYS"]);      
+        $u_system = new SystemUser;
+        $u_system->setEmail("admin@gmail.com");        
+        $u_system->setRoles(["ROLE_SUPERADMINSYS"]);      
 
-            $u_system->setPassword($this->passencoder->encodepassword($u_system,"password1234"));            
-            $u_system->setNom("nom".$i);            
-            $u_system->setPrenom("prenom".$i);            
-            $u_system->setTelephone(784568);            
-            $u_system->setStatus("dblked");            
+        $u_system->setPassword($this->passencoder->encodepassword($u_system,"admin"));            
+        $u_system->setNom("Admin");            
+        $u_system->setPrenom("Admin");            
+        $u_system->setTelephone(7784568);            
+        $u_system->setStatus("");            
 
-            $manager->persist($u_system);
-            $i++;
-        }
-
+        $manager->persist($u_system);
         $manager->flush();
     }
 }

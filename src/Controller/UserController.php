@@ -59,8 +59,9 @@ class UserController extends AbstractController
             default : 
             $user->setRoles(["ROLE_USERPREST"]);
         }
-        $user->setPassword($PE->encodePassword($user,($data['email'])));
+        $user->setPassword($PE->encodePassword($user,($data['password'])));
         $user->setNom($data['nom']);
+        $user->setEmail($data['email']);
         $user->setPrenom($data['prenom']);
         $user->setAdresse($data['adresse']);
         $user->setTelephone($data['telephone']);

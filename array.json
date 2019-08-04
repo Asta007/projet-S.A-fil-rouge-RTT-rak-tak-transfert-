@@ -54,20 +54,44 @@
         "nom":"Ababacar",
         "prenom":"Asta",
         "telephone":784567895
+    },
+
+
+    {"for": "Add Transaction "},
+    {
+        "type":"depot",
+        "mnt":54000,
+        "idcaissier":13,
+        "compte":"C7-P29"
+    },
+    
+
+    {"For": "Triple Add Prestataires"},
+    {
+        "denomination":"serign bi groupe",
+        "adress":"pikine",
+        "contacte":784587458,
+        "emailp":"teste@gmail.com",
+        "statusp":"blked",
+        
+        "solde":75000,
+        
+        "email":"myemail@gmail.com",
+        "role":10,
+        "password":"password1234",
+        "nom":"Mbaye",
+        "prenom":"Asta",
+        "adresse":"hamo 6",
+        "telephone":784567895,
+        "cni":123569875,
+        "status":"dblked"
+    },
+
+    {
+        "10":"Super Admin",
+        "11":"Admin system",
+        "12":"Caissier",
+        "20":"Admin prestataire",
+        "21":"user prestataire"
     }
 ]
-
-
-
-
-
-
-
-
-======================
-10 = Super Admin
-11 = Admin system
-12 = Caissier
-
-20 = Admin prestataire
-21 = user prestataire

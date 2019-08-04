@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
- * @Route("/system/user")
+ * @Route("/system_user")
  */
 class SystemUserController extends AbstractController
 {
@@ -148,5 +148,17 @@ class SystemUserController extends AbstractController
         $result = $ser->serialize($user,'json');
         $response = new Response($result);
         return($response);
+    }
+
+     /**
+     * @Route("/login", name="login", methods={"POST"})
+     */
+    public function login(Request $request)
+    {
+        $user = $this->getUser();
+        return $this->json([
+            'username' => $user->getUsername(),
+            'roles' => $user->getRoles()
+        ]);
     }
 }

@@ -9,6 +9,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Entity\SystemUser;
+use App\Entity\Compte;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @Route("/transactions")
@@ -18,77 +23,63 @@ class TransactionsController extends AbstractController
     /**
      * @Route("/", name="transactions_index", methods={"GET"})
      */
-    public function index(TransactionsRepository $transactionsRepository): Response
+    public function index(TransactionsRepository $transactionsRepository,SerializerInterface $ser)
     {
-        return $this->render('transactions/index.html.twig', [
-            'transactions' => $transactionsRepository->findAll(),
-        ]);
+        $transactionsRepository->findAll();
+        $result = $ser->serialize($transactionsRepository,'json');
+        $response = new Response($result);
+        return($response);
+
     }
 
     /**
      * @Route("/new", name="transactions_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request,SerializerInterface $ser)
     {
+        $data = $request->getContent();
+        $data = json_decode($data,true);
+
+        $caissier = $this->getDoctrine()->getRepository(SystemUser::class)->find($data['idcaissier']);
+        
         $transaction = new Transactions();
-        $form = $this->createForm(TransactionsType::class, $transaction);
-        $form->handleRequest($request);
+        $transaction->setDate(new \DateTime('now'));
+        $transaction->setTypeDeTransaction($data['type']);
+        $transaction->setMontant($data['mnt']);
+        $transaction->setCaissier($caissier);
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($transaction);
+        $entityManager->flush();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($transaction);
-            $entityManager->flush();
+        // solde = le solde plus le montant de $data a ajouter
+        $cmpt = $this->getDoctrine()->getRepository(Compte::class)->findByIntitule($data['compte']);
+        $cmpt[0]->setSolde($cmpt[0]->getSolde() + ($data['mnt']));
 
-            return $this->redirectToRoute('transactions_index');
-        }
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->flush();
 
-        return $this->render('transactions/new.html.twig', [
-            'transaction' => $transaction,
-            'form' => $form->createView(),
-        ]);
+        $response = new JsonResponse($ser->serialize($transaction,'json'));
+        return ($response);
     }
 
     /**
      * @Route("/{id}", name="transactions_show", methods={"GET"})
      */
-    public function show(Transactions $transaction): Response
+    public function show(Transactions $transaction,$id,TransactionsRepository $transactionsRepository,SerializerInterface $ser)
     {
-        return $this->render('transactions/show.html.twig', [
-            'transaction' => $transaction,
-        ]);
+        $transactionsRepository->find($id);
+        $result = $ser->serialize($transactionsRepository,'json');
+        $response = new Response($result);
+        return($response);
     }
 
-    /**
-     * @Route("/{id}/edit", name="transactions_edit", methods={"GET","POST"})
-     */
-    public function edit(Request $request, Transactions $transaction): Response
-    {
-        $form = $this->createForm(TransactionsType::class, $transaction);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('transactions_index');
-        }
-
-        return $this->render('transactions/edit.html.twig', [
-            'transaction' => $transaction,
-            'form' => $form->createView(),
-        ]);
-    }
 
     /**
-     * @Route("/{id}", name="transactions_delete", methods={"DELETE"})
+     * @Route("/{id}/arhiver", name="transactions_archiver", methods={"POST"})
      */
-    public function delete(Request $request, Transactions $transaction): Response
+    public function archiver(Request $request, Transactions $transaction)
     {
-        if ($this->isCsrfTokenValid('delete'.$transaction->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($transaction);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('transactions_index');
+    
     }
 }

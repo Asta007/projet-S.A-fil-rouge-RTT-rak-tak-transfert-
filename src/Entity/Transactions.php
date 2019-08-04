@@ -34,7 +34,7 @@ class Transactions
     private $montant;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\SystemUser")
      * @ORM\JoinColumn(nullable=false)
      */
     private $caissier;
@@ -80,12 +80,12 @@ class Transactions
         return $this;
     }
 
-    public function getCaissier(): ?User
+    public function getCaissier(): ?SystemUser
     {
         return $this->caissier;
     }
 
-    public function setCaissier(?User $caissier): self
+    public function setCaissier(?SystemUser $caissier): self
     {
         $this->caissier = $caissier;
 
