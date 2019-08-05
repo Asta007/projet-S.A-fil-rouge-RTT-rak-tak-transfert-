@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SystemUserRepository")
@@ -20,13 +20,11 @@ class SystemUser implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
-     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $roles = [];
 
@@ -38,25 +36,21 @@ class SystemUser implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $telephone;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $status;
 

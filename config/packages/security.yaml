@@ -40,7 +40,5 @@ security:
 
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/Compte, roles: ROLE_SUPERADMINSYS and ROLE_CAISSIER }
-        - { path: ^/transactions, roles: ROLE_SUPERADMINSYS and ROLE_CAISSIER }
-        - { path: ^/System_user, roles: ROLE_SUPERADMINSYS and ROLE_ADMINSYS }
+        - { path: ^/System_user, roles: ROLE_ADMINSYS }
         - { path: ^/system_user/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

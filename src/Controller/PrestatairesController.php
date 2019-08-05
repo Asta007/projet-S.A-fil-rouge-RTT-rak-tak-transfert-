@@ -13,7 +13,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\Compte;
 use App\Entity\User;
-use ApiPlatform\Core\Validator\ValidatorInterface;
 
 /**
  * @Route("/prestataires")
@@ -35,7 +34,7 @@ class PrestatairesController extends AbstractController
     /**
      * @Route("/new", name="prestataires_new", methods={"GET","POST"})
      */
-    public function new(Request $request,UserPasswordEncoderInterface $PE,SerializerInterface $ser,ValidatorInterface $validator)
+    public function new(Request $request,UserPasswordEncoderInterface $PE,SerializerInterface $ser)
     {
         $data = $request->getContent();
         $data = json_decode($data,true);
@@ -58,16 +57,9 @@ class PrestatairesController extends AbstractController
             $prestataire ->setContacte($data['contacte']);
             $prestataire ->setEmail($data['emailp']);
             $prestataire ->setStatus($data['statusp']);
-
-        $validations = $validator->validate($prestataire);
-        if(($validations) != null){
-            $strval = (string)$validations;
-            $response = new Response($strval);
-            return($response);
-        }
+        var_dump($prestataire);
 
         $entityManager = $this->getDoctrine()->getManager();
-
         $entityManager->persist($prestataire);
 
         // Creation du compte pour le prestataire Prestataire ==================================
@@ -86,15 +78,8 @@ class PrestatairesController extends AbstractController
         $compte = new Compte();
             $compte->SetIntitule($intituleDeCompte);
             $compte->setPrestataire($prestataire);
-            $compte->SetSolde($data['solde'] );
-
-        $validations = $validator->validate($compte);
-        
-        if(($validations) != null) {
-            $strval = (string) $validations;
-            $response = new Response($strval);
-            return($response);
-        }
+            $compte->SetSolde(0);
+        var_dump($compte);
 
         $entityManager->persist($compte);
 
@@ -113,14 +98,6 @@ class PrestatairesController extends AbstractController
             $user->setPrestataire($prestataire);
             $user->setCompteAssocie($compte);
         var_dump($user);    
-
-        $validations = $validator->validate($user);
-        
-        if(($validations) != null){
-            $strval = (string) $validations;
-            $response = new Response($strval);
-            return($response);
-        }
 
         $entityManager->persist($user);
         $entityManager->flush();

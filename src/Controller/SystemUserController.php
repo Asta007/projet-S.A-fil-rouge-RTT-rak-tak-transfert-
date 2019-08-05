@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/system_user")
@@ -32,7 +31,7 @@ class SystemUserController extends AbstractController
     /**
      * @Route("/new", name="system_user_new", methods={"GET","POST"})
      */
-    public function new(Request $request,UserPasswordEncoderInterface $passencoder,ValidatorInterface $validator)
+    public function new(Request $request,UserPasswordEncoderInterface $passencoder)
     {
         $data = $request->getContent();
         $data = json_decode($data,true);
@@ -58,15 +57,6 @@ class SystemUserController extends AbstractController
             $su->setPrenom($data['prenom']);            
             $su->setTelephone($data['telephone']); 
             $su->setStatus("dblked"); 
-
-            $validations = $validator->validate($su);
-        
-        if(($validations) != null) {
-            $strval = (string) $validations;
-            $response = new Response($strval);
-            return($response);
-        }
-
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($su);
@@ -167,7 +157,7 @@ class SystemUserController extends AbstractController
     {
         $user = $this->getUser();
         return $this->json([
-            'username' => $user->getEmail(),
+            'username' => $user->getUsername(),
             'roles' => $user->getRoles()
         ]);
     }

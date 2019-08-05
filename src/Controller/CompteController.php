@@ -10,10 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Prestataires;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-
 
 /**
  * @Route("/compte")
@@ -34,7 +30,7 @@ class CompteController extends AbstractController
     /**
      * @Route("/new", name="compte_new", methods={"GET","POST"})
      */
-    public function new(Request $request,ValidatorInterface $validator): Response
+    public function new(Request $request): Response
     {
         $this->DenyAccessUnlessGranted('ROLE_CAISSIER','Seul un caissier peut acceder ce plateforme');
         
@@ -61,19 +57,12 @@ class CompteController extends AbstractController
         $compte->SetIntitule($intituleDeCompte);
         $compte->setPrestataire($matprest[0]);
         $compte->SetSolde($data['solde']);
-       
-        $validations = $validator->validate($compte);
-        if(count($validations) > 0){
-            $strval = (string)$validations;
-            $response = new Response($strval);
-            return($response);
-        }
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($compte);
         $entityManager->flush();
 
-        $response = new Response("compte ajouté avec success !");
+        $response = new Response("ok");
         return($response);
 
     }// done !
