@@ -13,6 +13,7 @@ use App\Entity\Prestataires;
 use App\Entity\Compte;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/user")
@@ -34,7 +35,7 @@ class UserController extends AbstractController
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      */
-    public function new(Request $request, UserPasswordEncoderInterface $PE,SerializerInterface $ser){
+    public function new(Request $request, UserPasswordEncoderInterface $PE,SerializerInterface $ser,ValidatorInterface $validator){
         $data = $request->getContent();
         $data = json_decode($data,true);
 
@@ -69,6 +70,14 @@ class UserController extends AbstractController
         $user->setStatus($data['status']);
         $user->setPrestataire($prestataire);
         $user->setCompteAssocie($compte);
+
+        $validations = $validator->validate($user);
+        
+        if(($validations) != null) {
+            $strval = (string) $validations;
+            $response = new Response($strval);
+            return($response);
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($user);

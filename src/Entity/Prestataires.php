@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -20,31 +21,37 @@ class Prestataires
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $matricule;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $denomination;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $contacte;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $status;
 

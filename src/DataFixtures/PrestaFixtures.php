@@ -10,25 +10,25 @@ class PrestaFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        // $i = 1;
-        // while($i < 5){
-        //     $prest = new Prestataires();
-        //     $prest ->setMatricule("19-P".$i);
-        //     $prest ->setDenomination("Bakh Yaye Solution");
-        //     $prest ->setAdresse("dakar");
-        //     $prest ->setContacte(123456984);
-        //     $prest ->setEmail("email".$i."@gmail.com");
-        //     if ( $i % 2 == 0){
-        //         $prest ->setStatus("blked");
-        //     }
-        //     else{
-        //         $prest ->setStatus("dblked");
-        //     }
+        $i = 1;
+        while($i < 4){
+            $prest = new Prestataires();
+            $prest ->setMatricule("19-P".$i);
+            $prest ->setDenomination("Bakh Yaye Solution");
+            $prest ->setAdresse("dakar");
+            $prest ->setContacte(123456984);
+            $prest ->setEmail("email".$i."@gmail.com");
+            if ( $i % 2 == 0){
+                $prest ->setStatus("blked");
+            }
+            else{
+                $prest ->setStatus("dblked");
+            }
 
-        //     $manager->persist($prest);
-        //     $manager->flush();
+            $manager->persist($prest);
+            $manager->flush();
 
-        //     $i++;
-        // }
+            $i++;
+        }
     }
 }

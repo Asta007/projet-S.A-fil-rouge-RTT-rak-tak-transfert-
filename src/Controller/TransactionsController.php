@@ -14,6 +14,7 @@ use App\Entity\SystemUser;
 use App\Entity\Compte;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/transactions")
@@ -35,7 +36,7 @@ class TransactionsController extends AbstractController
     /**
      * @Route("/new", name="transactions_new", methods={"GET","POST"})
      */
-    public function new(Request $request,SerializerInterface $ser)
+    public function new(Request $request,SerializerInterface $ser,ValidatorInterface $validator)
     {
         $data = $request->getContent();
         $data = json_decode($data,true);
@@ -47,6 +48,14 @@ class TransactionsController extends AbstractController
         $transaction->setTypeDeTransaction($data['type']);
         $transaction->setMontant($data['mnt']);
         $transaction->setCaissier($caissier);
+
+        $validations = $validator->validate($transaction);
+        
+        if(($validations) != null) {
+            $strval = (string) $validations;
+            $response = new Response($strval);
+            return($response);
+        }
         
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($transaction);

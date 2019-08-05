@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -20,6 +21,7 @@ class Transactions
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $date;
 
@@ -30,12 +32,17 @@ class Transactions
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message = "null champs ne doit etre vide")
+     * @Assert\GreaterThanOrEqual(
+     *      value = 75000,
+     *      message = "La somme a deposé doit au moins etre egal a 75000")
      */
     private $montant;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\SystemUser")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank(message = "null champs ne doit etre vide")
      */
     private $caissier;
 
