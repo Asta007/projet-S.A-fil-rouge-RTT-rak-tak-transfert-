@@ -32,7 +32,6 @@ class CompteController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $this->DenyAccessUnlessGranted('ROLE_CAISSIER','Seul un caissier peut acceder ce plateforme');
         
         $data = $request->getContent();
         $data = json_decode($data,true);
