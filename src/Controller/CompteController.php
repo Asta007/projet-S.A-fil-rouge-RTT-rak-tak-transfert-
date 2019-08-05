@@ -33,10 +33,11 @@ class CompteController extends AbstractController
 
     /**
      * @Route("/new", name="compte_new", methods={"GET","POST"})
-     * @isGranted("ROLE_CAISSIER")
      */
     public function new(Request $request,ValidatorInterface $validator): Response
     {
+        $this->DenyAccessUnlessGranted('ROLE_CAISSIER','Seul un caissier peut acceder ce plateforme');
+        
         $data = $request->getContent();
         $data = json_decode($data,true);
         
