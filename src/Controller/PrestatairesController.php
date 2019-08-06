@@ -48,6 +48,7 @@ class PrestatairesController extends AbstractController
         $maxidresult = $maxid ->getResult();
         $idDuPrest = ($maxidresult[0][1] + 1);
         $maxid = ($maxidresult[0][1] + 1);
+        
         $mat .="-P".$maxid; 
     
         $prestataire = new Prestataires();

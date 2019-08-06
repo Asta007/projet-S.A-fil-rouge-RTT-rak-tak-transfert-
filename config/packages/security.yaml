@@ -23,7 +23,7 @@ security:
             anonymous: true
             json_login:
                 check_path: /system_user/login_check
-                success_handler: lexik_jwt_authentication.handler.authentication_successpot
+                success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         
         system:
@@ -48,5 +48,12 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/system_user/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/System_user, roles: ROLE_ADMINSYS }
-        - { path: ^/compte/new, roles: ROLE_SUPERADMINSYS }
+        - { path: ^/System_user, roles: ROLE_ADMINSYS ROLE_SUPERADMINSYS}
+        
+        - { path: ^/compte/new, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS]}
+        - { path: ^/compte/edit, roles: ROLE_CAISSIER}
+        - { path: ^/compte/, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS]}
+        
+        - { path: ^/prestataire/, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}
+        - { path: ^/prestataire/new, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}
+        - { path: ^/prestataire/edit, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}
