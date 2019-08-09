@@ -1,0 +1,25 @@
+E prestataire
+	x create (triple ajout)
+	x block
+	x edit
+	x dblock
+
+compte
+	x create
+	x show
+	x show one
+
+usersystem
+	create
+	block
+	edit
+	show
+	show one
+
+UPrestataire
+	create
+	block
+	edit
+	show
+	show one
+

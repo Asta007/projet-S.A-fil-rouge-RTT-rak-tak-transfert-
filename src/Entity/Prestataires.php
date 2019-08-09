@@ -31,22 +31,22 @@ class Prestataires
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $adresse;
+    private $adressePrest;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $contacte;
+    private $contactePrest;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $email;
+    private $emailPrest;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $status;
+    private $statusPrest;
 
     public function getId(): ?int
     {
@@ -77,50 +77,50 @@ class Prestataires
         return $this;
     }
 
-    public function getAdresse(): ?string
+    public function getAdressePrest(): ?string
     {
-        return $this->adresse;
+        return $this->adressePrest;
     }
 
-    public function setAdresse(string $adresse): self
+    public function setAdressePrest(string $adresse): self
     {
-        $this->adresse = $adresse;
+        $this->adressePrest = $adresse;
 
         return $this;
     }
 
-    public function getContacte(): ?int
+    public function getContactePrest(): ?int
     {
-        return $this->contacte;
+        return $this->contactePrest;
     }
 
-    public function setContacte(int $contacte): self
+    public function setContactePrest(int $contacte): self
     {
-        $this->contacte = $contacte;
+        $this->contactePrest = $contacte;
 
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getEmailPrest(): ?string
     {
-        return $this->email;
+        return $this->emailPrest;
     }
 
-    public function setEmail(string $email): self
+    public function setEmailPrest(string $email): self
     {
-        $this->email = $email;
+        $this->emailPrest = $email;
 
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatusPrest(): ?string
     {
-        return $this->status;
+        return $this->statusPrest;
     }
 
-    public function setStatus(string $status): self
+    public function setStatusPrest(string $status): self
     {
-        $this->status = $status;
+        $this->statusPrest = $status;
 
         return $this;
     }

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CrudSupport index{% endblock %}
+
+{% block body %}
+    <h1>CrudSupport index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Naissance</th>
+                <th>Age</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for crud_support in crud_supports %}
+            <tr>
+                <td>{{ crud_support.id }}</td>
+                <td>{{ crud_support.nom }}</td>
+                <td>{{ crud_support.prenom }}</td>
+                <td>{{ crud_support.naissance ? crud_support.naissance|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ crud_support.age }}</td>
+                <td>{{ crud_support.description }}</td>
+                <td>
+                    <a href="{{ path('crud_support_show', {'id': crud_support.id}) }}">show</a>
+                    <a href="{{ path('crud_support_edit', {'id': crud_support.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('crud_support_new') }}">Create new</a>
+{% endblock %}

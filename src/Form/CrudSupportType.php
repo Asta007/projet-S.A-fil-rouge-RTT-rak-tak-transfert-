@@ -2,29 +2,28 @@
 
 namespace App\Form;
 
-use App\Entity\Prestataires;
+use App\Entity\CrudSupport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PrestatairesType extends AbstractType
+class CrudSupportType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('matricule')
-            ->add('denomination')
-            ->add('adressePrest')
-            ->add('contactePrest')
-            ->add('emailPrest')
-            ->add('statusPrest')
+            ->add('nom')
+            ->add('prenom')
+            ->add('naissance')
+            ->add('age')
+            ->add('description')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Prestataires::class,
+            'data_class' => CrudSupport::class,
         ]);
     }
 }

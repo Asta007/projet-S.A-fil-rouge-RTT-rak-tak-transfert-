@@ -20,7 +20,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
-    private $email;
+    private $emailUser;
 
     /**
      * @ORM\Column(type="json")
@@ -46,12 +46,12 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $adresse;
+    private $adresseUser;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $telephone;
+    private $telephoneUser;
 
     /**
      * @ORM\Column(type="integer")
@@ -61,7 +61,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $status;
+    private $statusUser;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Prestataires")
@@ -80,14 +80,14 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmailUser(): ?string
     {
-        return $this->email;
+        return $this->emailUser;
     }
 
-    public function setEmail(string $email): self
+    public function setEmailUser(string $email): self
     {
-        $this->email = $email;
+        $this->emailUser = $email;
 
         return $this;
     }
@@ -177,26 +177,26 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getAdresse(): ?string
+    public function getAdresseUser(): ?string
     {
-        return $this->adresse;
+        return $this->adresseUser;
     }
 
-    public function setAdresse(string $adresse): self
+    public function setAdresseUser(string $adresse): self
     {
-        $this->adresse = $adresse;
+        $this->adresseUser = $adresse;
 
         return $this;
     }
 
-    public function getTelephone(): ?string
+    public function getTelephoneUser(): ?string
     {
-        return $this->telephone;
+        return $this->telephoneUser;
     }
 
-    public function setTelephone(string $telephone): self
+    public function setTelephoneUser(string $telephone): self
     {
-        $this->telephone = $telephone;
+        $this->telephoneUser = $telephone;
 
         return $this;
     }
@@ -213,14 +213,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatusUser(): ?string
     {
-        return $this->status;
+        return $this->statusUser;
     }
 
-    public function setStatus(string $status): self
+    public function setStatusUser(string $status): self
     {
-        $this->status = $status;
+        $this->statusUser = $status;
 
         return $this;
     }

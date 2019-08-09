@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -31,6 +32,9 @@ class Compte
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(
+     * value = 75000,
+     * message = "Vous soit dois au moins etre de 75000")
      */
     private $solde;
 

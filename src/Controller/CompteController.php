@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Prestataires;
+use ApiPlatform\Core\Validator\ValidatorInterface;
 
 /**
  * @Route("/compte")
@@ -30,13 +31,13 @@ class CompteController extends AbstractController
     /**
      * @Route("/new", name="compte_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request,ValidatorInterface $validator): Response
     {
         
-        $data = $request->getContent();
-        $data = json_decode($data,true);
+        $data = $request->request->all();
+        $prest = $request->request->get('prestataire');
         
-        // recuperer l'Id maximalde la table compte
+        // // recuperer l'Id maximalde la table compte
         $maxid = $this->getDoctrine()->getRepository(Compte::class)->CreateQueryBuilder('a')
             ->select('Max(a.id)')
             ->getQuery();
@@ -44,26 +45,35 @@ class CompteController extends AbstractController
         $maxid = ($maxidresult[0][1] + 1);
         $maxid = "C".$maxid;
 
-        // recuperer l'id du prestataire associé via son matricule
-        $matprest =  $this->getDoctrine()->getRepository(Prestataires::class)->findByMatricule($data['matricule']);
+        // // recuperer l'id du prestataire associé via son matricule
+        $matprest =  $this->getDoctrine()->getRepository(Prestataires::class)->findByMatricule($prest);
+        
+        if($matprest == null){
+            $response = new Response(" Partenaire introuvable"); 
+            return ($response);
+        }
         $matprestid = ($matprest[0]->Getid());
 
-
-        // combinner l'id max et lid du prestataire pour creer les nom du compte
+        // // combinner l'id max et lid du prestataire pour creer les nom du compte
         $intituleDeCompte = $maxid."-P".$matprestid;
+
+        if(($request->request->get('solde')) < 74999){
+            $response = new Response(" le solde dois au moin etre de 75000"); 
+            return ($response);
+        }
         
         $compte = new Compte();
+        $form = $this->createform(CompteType::class,$compte);
+        $form->submit($data);
         $compte->SetIntitule($intituleDeCompte);
         $compte->setPrestataire($matprest[0]);
-        $compte->SetSolde($data['solde']);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($compte);
         $entityManager->flush();
-
-        $response = new Response("ok");
+        $response = new Response("compte ".$compte->getIntitule()." ajoute");
         return($response);
-
+        
     }// done !
 
     /**

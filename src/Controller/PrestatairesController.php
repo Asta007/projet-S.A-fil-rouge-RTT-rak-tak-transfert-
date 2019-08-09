@@ -13,6 +13,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\Compte;
 use App\Entity\User;
+use App\Form\CompteType;
+use App\Form\UserType;
 
 /**
  * @Route("/prestataires")
@@ -36,8 +38,7 @@ class PrestatairesController extends AbstractController
      */
     public function new(Request $request,UserPasswordEncoderInterface $PE,SerializerInterface $ser)
     {
-        $data = $request->getContent();
-        $data = json_decode($data,true);
+        $data = $request->request->all();
 
         // Ajoute du Prestataire ==================================
         
@@ -52,13 +53,12 @@ class PrestatairesController extends AbstractController
         $mat .="-P".$maxid; 
     
         $prestataire = new Prestataires();
+            $form = $this->createForm(PrestatairesType::class,$prestataire);
+            $form->submit($data);
             $prestataire ->setMatricule($mat);
-            $prestataire ->setDenomination($data['denomination']);
-            $prestataire ->setAdresse($data['adress']);
-            $prestataire ->setContacte($data['contacte']);
-            $prestataire ->setEmail($data['emailp']);
-            $prestataire ->setStatus($data['statusp']);
-        var_dump($prestataire);
+            $prestataire ->setAdressePrest($request->request->get('adressPrest'));
+            $prestataire ->setStatusPrest("dblked");
+        // var_dump($prestataire);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($prestataire);
@@ -77,34 +77,32 @@ class PrestatairesController extends AbstractController
         $intituleDeCompte = $maxid."-P".$idDuPrest;
         
         $compte = new Compte();
+        $form2 = $this->CreateForm(CompteType::class,$compte);
+        $form2->submit($data);
             $compte->SetIntitule($intituleDeCompte);
             $compte->setPrestataire($prestataire);
-            $compte->SetSolde(0);
-        var_dump($compte);
+            $compte->setSolde(0);
+        // var_dump($compte);
 
         $entityManager->persist($compte);
 
         // Creation du user admin du Prestataire ==================================
         
         $user = new User();
-            $user->setRoles(["ROLE_ADMINPREST"]);
+        
+        $form3 = $this->createForm(UserType::class,$user);
+        $form3->submit($data);
+            $user->setRoles(['ROLE_ADMINPREST']);
             $user->setPassword($PE->encodePassword($user,($data['password'])));
-            $user->setNom($data['nom']);
-            $user->setEmail($data['email']);
-            $user->setPrenom($data['prenom']);
-            $user->setAdresse($data['adresse']);
-            $user->setTelephone($data['telephone']);
-            $user->setCni($data['cni']);
-            $user->setStatus($data['status']);
             $user->setPrestataire($prestataire);
             $user->setCompteAssocie($compte);
-        var_dump($user);    
+            $user->setStatusUser("dblcked");
+        // var_dump($user);    
 
         $entityManager->persist($user);
         $entityManager->flush();
-            
-       
-        $response = new Response("ok");
+
+        $response = new Response("le Partenaire ".($request->request->get('denomination'))." a éte ajouter avec succes ainsi que son compte et son representant legal");
         return($response);
 
     }//done
@@ -126,23 +124,13 @@ class PrestatairesController extends AbstractController
      */
     public function edit(Request $request, Prestataires $prestataire,prestatairesRepository $prestatairesRepository,$id)
     {
-        $data = $request->getContent();
-        $data = json_decode($data,true);
-
-        $prestataire = $prestatairesRepository->find($id);
-        
-        $prestataire ->setMatricule($data['matricule']);
-        $prestataire ->setDenomination($data['denomination']);
-        $prestataire ->setAdresse($data['adress']);
-        $prestataire ->setContacte($data['contacte']);
-        $prestataire ->setEmail($data['email']);
-        $prestataire ->setStatus($data['status']);
-        var_dump($prestataire);
-        
+        $data = $request->request->all();
+        $form = $this->createForm(PrestatairesType::class,$prestataire);
+        $form->submit($data);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
 
-        $response = new Response("response edit");
+        $response = new Response("les parametre de \" ".($request->request->get('matricule'))." / ".($request->request->get('denomination'))." \" ont éte mis a jour");
         return($response);
 
     }//done
@@ -150,18 +138,17 @@ class PrestatairesController extends AbstractController
      /**
      * @Route("/{id}/block", name="prestataires_blk", methods={"GET","POST"})
      */
-    public function block(prestatairesRepository $prestatairesRepository,$id)
+    public function block(Prestataires $prestataire, Request $request)
     {
 
-        $prestataire = $prestatairesRepository->find($id);
-        $prestataire ->setStatus("blked");
-
-        var_dump($prestataire);
-        
+        $data = $request->request->all();
+        $form = $this->createForm(PrestatairesType::class,$prestataire);
+        $form->submit($data);
+        $prestataire->setStatusPrest("blcked");
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
 
-        $response = new Response("response");
+        $response = new Response(($request->request->get('matricule'))." / ".($request->request->get('denomination'))." a éte bloqué avec succes");
         return($response);
 
     }// done
@@ -169,18 +156,17 @@ class PrestatairesController extends AbstractController
     /**
      * @Route("/{id}/dblock", name="prestataires_deb", methods={"GET","POST"})
      */
-    public function dblock(prestatairesRepository $prestatairesRepository,$id)
+    public function dblock(Prestataires $prestataire, Request $request)
     {
 
-        $prestataire = $prestatairesRepository->find($id);
-        $prestataire ->setStatus("dblked");
-
-        var_dump($prestataire);
-        
+        $data = $request->request->all();
+        $form = $this->createForm(PrestatairesType::class,$prestataire);
+        $form->submit($data);
+        $prestataire->setStatusPrest("dblcked");
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
 
-        $response = new Response("response");
+        $response = new Response(($request->request->get('matricule'))." / ".($request->request->get('denomination'))." a éte débloqué avec succes");
         return($response);
 
     }// done
