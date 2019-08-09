@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Tests;
+
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+class UserControllerControllerTest extends WebTestCase
+{
+    public function addUserprestataire()
+    {
+        $client = static::createClient([],[
+            'PHP_AUTH_USER'=>'admin@gmail.com',
+            'PHP_AUTH_PW'=>'admin',
+        ]);
+
+        $crawler = $client->request('POST', '/user/new',[],[],
+        ['CONTENT_TYPE'=>'application/json'],'{
+
+            "email":"myemail@gmail.com",
+            "role":10,
+            "password":"password1234",
+            "nom":"Mbaye",
+            "prenom":"Asta",
+            "adresse":"19-P4",
+            "telephone":784567895,
+            "cni":123569875,
+            "status":"dblked",
+            "prestataire":"19-P4",
+            "compte":"C1-P5"
+        }');
+
+        $reponse = $client->getReponse();
+        var_dump($reponse);
+
+        $this->assertEquals(200,$client->getReponse()->getStatusCode());
+    }
+}

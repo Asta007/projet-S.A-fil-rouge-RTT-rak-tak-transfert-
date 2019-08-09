@@ -14,6 +14,7 @@ use App\Entity\SystemUser;
 use App\Entity\Compte;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/transactions")
@@ -34,9 +35,11 @@ class TransactionsController extends AbstractController
 
     /**
      * @Route("/new", name="transactions_new", methods={"GET","POST"})
+     * 
      */
-    public function new(Request $request,SerializerInterface $ser)
+    public function new(Request $request,SerializerInterface $ser,ValidatorInterface $validator)
     {
+        $this->denyAccessUnlessGranted('ROLE_CAISSIER','Vous n\'este pas abilité a modifier ce contenu');
         $data = $request->getContent();
         $data = json_decode($data,true);
 
@@ -47,19 +50,26 @@ class TransactionsController extends AbstractController
         $transaction->setTypeDeTransaction($data['type']);
         $transaction->setMontant($data['mnt']);
         $transaction->setCaissier($caissier);
-        
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($transaction);
         $entityManager->flush();
 
-        // solde = le solde plus le montant de $data a ajouter
+        $validation = $validator->validate($transaction);
+        
+        if(count($validation) > 0){
+            $valresult = (string)$validation;
+            $response = new Response($valresult);
+            return ($response);
+        }
+
+        // on incremente le compte ayant subit la transactiions
         $cmpt = $this->getDoctrine()->getRepository(Compte::class)->findByIntitule($data['compte']);
         $cmpt[0]->setSolde($cmpt[0]->getSolde() + ($data['mnt']));
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
 
-        $response = new JsonResponse($ser->serialize($transaction,'json'));
+        $response = new Response($ser->serialize($transaction,'json'));
         return ($response);
     }
 

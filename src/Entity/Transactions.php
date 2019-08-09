@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ApiResource()
@@ -30,6 +32,9 @@ class Transactions
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThanOrEqual(
+     * value = 75000,
+     * message = "votre somme au depot dois au moins etre de 75000f ")
      */
     private $montant;
 

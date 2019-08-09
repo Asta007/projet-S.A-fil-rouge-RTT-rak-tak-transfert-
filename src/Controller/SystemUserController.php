@@ -155,10 +155,18 @@ class SystemUserController extends AbstractController
      */
     public function login(Request $request)
     {
-        $user = $this->getUser();
+        $user = $request->getUser();
+        // $user = $this->getTokenStorage()->getToken()->getUser();
+        var_dump($user);
+        $req = $request->headers->get('X-API-TOKEN');
+        // $username = $request->request->get('user');
+        var_dump($req);
+
         return $this->json([
             'username' => $user->getUsername(),
             'roles' => $user->getRoles()
         ]);
+
+        return $this->json("test");
     }
 }

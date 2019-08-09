@@ -46,7 +46,7 @@
         "compte":"C1-P5"
     },
 
-    {"for": "Add new userto System "},
+    {"for": "Add new user to System "},
     {
         "email":"someemail@gmail.com",
         "role":10,

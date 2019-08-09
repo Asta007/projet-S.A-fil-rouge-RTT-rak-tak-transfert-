@@ -26,12 +26,12 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         
-        system:
-            pattern: ^/system_user/
-            stateless: true
-            guard:
-                authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
+        # system:
+        #     pattern: ^/system_user/login
+        #     stateless: true
+        #     guard:
+        #         authenticators:
+        #             - lexik_jwt_authentication.jwt_token_authenticator
             
         compte:
             pattern: ^/compte/
@@ -39,21 +39,32 @@ security:
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
+
+        transaction:
+            pattern: ^/transactions/
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
         
-        # main:
-        #     anonymous: true
-        #     json_login:
-        #         check_path: /system_user/login
+        main:
+            pattern: ^/system_user/login 
+            anonymous: true
+            json_login:
+                check_path: /system_user/login
 
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/system_user/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/System_user, roles: ROLE_ADMINSYS ROLE_SUPERADMINSYS}
+        - { path: ^/System_user, roles: [ROLE_ADMINSYS, ROLE_SUPERADMINSYS]}
         
         - { path: ^/compte/new, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS]}
-        - { path: ^/compte/edit, roles: ROLE_CAISSIER}
         - { path: ^/compte/, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS]}
         
         - { path: ^/prestataire/, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}
         - { path: ^/prestataire/new, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}
         - { path: ^/prestataire/edit, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}
+
+        - { path: ^/transactions, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS,ROLE_ADMINSYS]}
+        # - { path: ^/transactions/, roles: ROLE_CAISSIER}
+        # - { path: ^/transcations/, roles: ROLE_CAISSIER}

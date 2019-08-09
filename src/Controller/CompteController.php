@@ -58,8 +58,8 @@ class CompteController extends AbstractController
         $compte->SetSolde($data['solde']);
 
         $entityManager = $this->getDoctrine()->getManager();
-        // $entityManager->persist($compte);
-        // $entityManager->flush();
+        $entityManager->persist($compte);
+        $entityManager->flush();
 
         $response = new Response("ok");
         return($response);
