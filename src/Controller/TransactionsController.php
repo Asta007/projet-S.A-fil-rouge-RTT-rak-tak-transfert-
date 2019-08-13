@@ -30,7 +30,6 @@ class TransactionsController extends AbstractController
         $result = $ser->serialize($transactionsRepository,'json');
         $response = new Response($result);
         return($response);
-
     }
 
     /**
@@ -39,51 +38,47 @@ class TransactionsController extends AbstractController
      */
     public function new(Request $request,SerializerInterface $ser,ValidatorInterface $validator)
     {
-        $this->denyAccessUnlessGranted('ROLE_CAISSIER','Vous n\'este pas abilité a modifier ce contenu');
-        $data = $request->getContent();
-        $data = json_decode($data,true);
+        // $this->denyAccessUnlessGranted('ROLE_CAISSIER','Vous n\'este pas abilité a modifier ce contenu');
+        $data = $request->request->all();
+        $date = (new \DateTime('now'));
+        $data += ['date' => $date];
+        $montant = $request->request->get('montant');
+        $compt = $request->request->get('compte');
 
-        $caissier = $this->getDoctrine()->getRepository(SystemUser::class)->find($data['idcaissier']);
+            if($montant < 75000){
+                $response = new response ("le montant de au moin etre de 75000");
+                return ($response);
+            }
+
+        $caissier = $request->request->get('caissier');
+        $caissier = $this->getDoctrine()->getRepository(SystemUser::class)->find($caissier);
         
-        $transaction = new Transactions();
-        $transaction->setDate(new \DateTime('now'));
-        $transaction->setTypeDeTransaction($data['type']);
-        $transaction->setMontant($data['mnt']);
-        $transaction->setCaissier($caissier);
+            if($caissier == null){
+                return new response (" Impossible de trouver le caissier en question");
+            }
+
+        $transactions = new Transactions;
+        $form = $this->CreateForm(TransactionsType::class,$transactions);
+        $form->submit($data);
+        $transactions->setDate(new \DateTime('now'));
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($transaction);
-        $entityManager->flush();
+        $entityManager->persist($transactions);
 
-        $validation = $validator->validate($transaction);
+        // on incremente le compte ayant subit la transactiions
+        $cmpt = $this->getDoctrine()->getRepository(Compte::class)->findByIntitule($compt);
         
-        if(count($validation) > 0){
-            $valresult = (string)$validation;
-            $response = new Response($valresult);
+        if($cmpt == null){
+            $response = new Response("le compte n'existe pas");
             return ($response);
         }
 
-        // on incremente le compte ayant subit la transactiions
-        $cmpt = $this->getDoctrine()->getRepository(Compte::class)->findByIntitule($data['compte']);
-        $cmpt[0]->setSolde($cmpt[0]->getSolde() + ($data['mnt']));
-
+        $cmpt[0]->setSolde($cmpt[0]->getSolde() + $montant);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
 
-        $response = new Response($ser->serialize($transaction,'json'));
+        $response = new Response("montant de ".$request->request->get('montant')." deposé sur le compte ".$request->request->get('compte'));
         return ($response);
     }
-
-    /**
-     * @Route("/{id}", name="transactions_show", methods={"GET"})
-     */
-    public function show(Transactions $transaction,$id,TransactionsRepository $transactionsRepository,SerializerInterface $ser)
-    {
-        $transactionsRepository->find($id);
-        $result = $ser->serialize($transactionsRepository,'json');
-        $response = new Response($result);
-        return($response);
-    }
-
 
     /**
      * @Route("/{id}/arhiver", name="transactions_archiver", methods={"POST"})

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Prestataires;
 use ApiPlatform\Core\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @Route("/compte")
@@ -20,10 +21,14 @@ class CompteController extends AbstractController
     /**
      * @Route("/", name="compte_index", methods={"GET"})
      */
-    public function index(CompteRepository $compteRepository): Response
+    public function index(Security $security, CompteRepository $compteRepository): Response
     {
         $result = $compteRepository->findAll();
         $result = $this->get('serializer')->serialize($result,'json');
+        
+        $username = $security->getUser()->getUsername();
+        ?> <p> <u> <em> <?php echo "conected as ".$username; ?>  </em></u> </p> <br> <?php
+
         $response = new Response($result);
         return($response);
     }

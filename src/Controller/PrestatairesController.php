@@ -58,7 +58,6 @@ class PrestatairesController extends AbstractController
             $prestataire ->setMatricule($mat);
             $prestataire ->setAdressePrest($request->request->get('adressPrest'));
             $prestataire ->setStatusPrest("dblked");
-        // var_dump($prestataire);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($prestataire);
@@ -82,7 +81,6 @@ class PrestatairesController extends AbstractController
             $compte->SetIntitule($intituleDeCompte);
             $compte->setPrestataire($prestataire);
             $compte->setSolde(0);
-        // var_dump($compte);
 
         $entityManager->persist($compte);
 
@@ -97,7 +95,6 @@ class PrestatairesController extends AbstractController
             $user->setPrestataire($prestataire);
             $user->setCompteAssocie($compte);
             $user->setStatusUser("dblcked");
-        // var_dump($user);    
 
         $entityManager->persist($user);
         $entityManager->flush();

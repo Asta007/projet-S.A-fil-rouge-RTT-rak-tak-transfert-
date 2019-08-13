@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @Route("/system_user")
@@ -20,10 +21,14 @@ class SystemUserController extends AbstractController
     /**
      * @Route("/", name="system_user_index", methods={"GET"})
      */
-    public function index(SystemUserRepository $systemUserRepository,SerializerInterface $ser)
+    public function index(Security $security ,SystemUserRepository $systemUserRepository,SerializerInterface $ser)
     {
         $result = $systemUserRepository->findAll();
         $result = $ser->serialize($result,'json');
+        
+        $username = $security->getUser()->getUsername();
+        ?> <p> <u> <em> <?php echo "conected as ".$username; ?>  </em></u> </p> <br> <?php
+        
         $response = new Response($result);
         return($response);
     }
@@ -156,16 +161,14 @@ class SystemUserController extends AbstractController
     public function login(Request $request)
     {
         $user = $request->getUser();
-        // $user = $this->getTokenStorage()->getToken()->getUser();
         var_dump($user);
         $req = $request->headers->get('X-API-TOKEN');
-        // $username = $request->request->get('user');
         var_dump($req);
 
-        return $this->json([
-            'username' => $user->getUsername(),
-            'roles' => $user->getRoles()
-        ]);
+        // return $this->json([
+        //     'username' => $user->getUsername(),
+        //     'roles' => $user->getRoles()
+        // ]);
 
         return $this->json("test");
     }

@@ -9,17 +9,20 @@ compte
 	x show
 	x show one
 
+Transactions
+	x create
+	x archiver
+
 usersystem
 	create
 	block
 	edit
-	show
-	show one
+	x show
+	x show one
 
 UPrestataire
 	create
 	block
 	edit
-	show
-	show one
-
+	x show
+	x show one
