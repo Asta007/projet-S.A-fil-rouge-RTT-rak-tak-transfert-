@@ -58,7 +58,7 @@ security:
         - { path: ^/system_user/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/System_user, roles: [ROLE_ADMINSYS, ROLE_SUPERADMINSYS]}
         
-        # - { path: ^/compte/new, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS]}
+        - { path: ^/compte/new, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS]}
         # - { path: ^/compte/, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS]}
         
         - { path: ^/prestataire/, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}

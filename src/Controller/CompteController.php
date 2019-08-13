@@ -62,21 +62,22 @@ class CompteController extends AbstractController
         // // combinner l'id max et lid du prestataire pour creer les nom du compte
         $intituleDeCompte = $maxid."-P".$matprestid;
 
-        if(($request->request->get('solde')) < 74999){
-            $response = new Response(" le solde dois au moin etre de 75000"); 
-            return ($response);
-        }
+        // if(($request->request->get('solde')) < 74999){
+        //     $response = new Response(" le solde dois au moin etre de 75000"); 
+        //     return ($response);
+        // }
         
         $compte = new Compte();
         $form = $this->createform(CompteType::class,$compte);
         $form->submit($data);
         $compte->SetIntitule($intituleDeCompte);
         $compte->setPrestataire($matprest[0]);
+        $compte->setSolde(0);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($compte);
         $entityManager->flush();
-        $response = new Response("compte ".$compte->getIntitule()." ajoute");
+        $response = new Response("compte ".$compte->getIntitule()." ajoute avec succé : \n solde de depart: 0f");
         return($response);
         
     }// done !

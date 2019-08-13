@@ -25,8 +25,7 @@
 
     {"for": "New Compte"},
     {
-        "matricule":"19-P4",
-        "solde":0
+        "prestataire":"19-P4"
     },
 
 
@@ -59,9 +58,8 @@
 
     {"for": "Add Transaction "},
     {
-        "type":"depot",
-        "mnt":54000,
-        "idcaissier":13,
+        "typeDeTansaction":"depot",
+        "montan":54000,
         "compte":"C7-P29"
     },
     

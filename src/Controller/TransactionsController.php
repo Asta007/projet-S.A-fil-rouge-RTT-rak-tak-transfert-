@@ -15,6 +15,10 @@ use App\Entity\Compte;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Security\Core\Security;
+
+
 
 /**
  * @Route("/transactions")
@@ -36,31 +40,26 @@ class TransactionsController extends AbstractController
      * @Route("/new", name="transactions_new", methods={"GET","POST"})
      * 
      */
-    public function new(Request $request,SerializerInterface $ser,ValidatorInterface $validator)
+    public function new(Security $security, Request $request,SerializerInterface $ser,ValidatorInterface $validator)
     {
-        // $this->denyAccessUnlessGranted('ROLE_CAISSIER','Vous n\'este pas abilité a modifier ce contenu');
+        $this->denyAccessUnlessGranted('ROLE_CAISSIER','Vous n\'este pas abilité a modifier ce contenu');
         $data = $request->request->all();
         $date = (new \DateTime('now'));
         $data += ['date' => $date];
         $montant = $request->request->get('montant');
         $compt = $request->request->get('compte');
+        $curent_user = $security->getUser();
+        $data += ['caissier' => $curent_user];
 
             if($montant < 75000){
-                $response = new response ("le montant de au moin etre de 75000");
-                return ($response);
-            }
-
-        $caissier = $request->request->get('caissier');
-        $caissier = $this->getDoctrine()->getRepository(SystemUser::class)->find($caissier);
-        
-            if($caissier == null){
-                return new response (" Impossible de trouver le caissier en question");
+                throw new HttpException(500,"le montant doit etre au moins etre de 75000");
             }
 
         $transactions = new Transactions;
         $form = $this->CreateForm(TransactionsType::class,$transactions);
         $form->submit($data);
         $transactions->setDate(new \DateTime('now'));
+        $transactions->setCaissier($curent_user);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($transactions);
 
@@ -68,8 +67,7 @@ class TransactionsController extends AbstractController
         $cmpt = $this->getDoctrine()->getRepository(Compte::class)->findByIntitule($compt);
         
         if($cmpt == null){
-            $response = new Response("le compte n'existe pas");
-            return ($response);
+            throw new HttpException(500,'le compte '.$compt.' n\'a pas éte trouvé');
         }
 
         $cmpt[0]->setSolde($cmpt[0]->getSolde() + $montant);
