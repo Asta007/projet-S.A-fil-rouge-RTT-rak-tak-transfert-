@@ -4950,10 +4950,11 @@
         <argument key="prestatairesRepository" type="service" id="App\Repository\PrestatairesRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.0If8aRX" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.R96zaOX" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="PE" type="service" id="security.user_password_encoder.generic"/>
+        <argument key="kernel" type="service" id="kernel"/>
         <argument key="ser" type="service" id="serializer"/>
       </argument>
     </service>
@@ -5027,6 +5028,13 @@
         <argument key="userRepository" type="service" id="App\Repository\UserRepository"/>
       </argument>
     </service>
+    <service id=".service_locator.0If8aRX" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="PE" type="service" id="security.user_password_encoder.generic"/>
+        <argument key="ser" type="service" id="serializer"/>
+      </argument>
+    </service>
     <service id=".service_locator.wypGnUQ" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -5039,7 +5047,7 @@
         <argument key="userRepository" type="service" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.eIIhLHg" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.kxeRoTE" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\CompteController::index" type="service" id=".service_locator.pDb1k1s"/>
@@ -5054,7 +5062,7 @@
         <argument key="App\Controller\PrestatairesController::delete" type="service" id=".service_locator.9Zq0_OY"/>
         <argument key="App\Controller\PrestatairesController::edit" type="service" id=".service_locator.nlXHtzo"/>
         <argument key="App\Controller\PrestatairesController::index" type="service" id=".service_locator.vqrAPAE"/>
-        <argument key="App\Controller\PrestatairesController::new" type="service" id=".service_locator.0If8aRX"/>
+        <argument key="App\Controller\PrestatairesController::new" type="service" id=".service_locator.R96zaOX"/>
         <argument key="App\Controller\PrestatairesController::show" type="service" id=".service_locator.vqrAPAE"/>
         <argument key="App\Controller\SystemUserController::block" type="service" id=".service_locator.xcOLqs6"/>
         <argument key="App\Controller\SystemUserController::deblock" type="service" id=".service_locator.xcOLqs6"/>
@@ -5083,7 +5091,7 @@
         <argument key="App\Controller\PrestatairesController:delete" type="service" id=".service_locator.9Zq0_OY"/>
         <argument key="App\Controller\PrestatairesController:edit" type="service" id=".service_locator.nlXHtzo"/>
         <argument key="App\Controller\PrestatairesController:index" type="service" id=".service_locator.vqrAPAE"/>
-        <argument key="App\Controller\PrestatairesController:new" type="service" id=".service_locator.0If8aRX"/>
+        <argument key="App\Controller\PrestatairesController:new" type="service" id=".service_locator.R96zaOX"/>
         <argument key="App\Controller\PrestatairesController:show" type="service" id=".service_locator.vqrAPAE"/>
         <argument key="App\Controller\SystemUserController:block" type="service" id=".service_locator.xcOLqs6"/>
         <argument key="App\Controller\SystemUserController:deblock" type="service" id=".service_locator.xcOLqs6"/>
@@ -5388,12 +5396,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
-      <argument type="service" id=".service_locator.eIIhLHg"/>
+      <argument type="service" id=".service_locator.kxeRoTE"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver" public="false"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver" public="false">
-      <argument type="service" id=".service_locator.eIIhLHg"/>
+      <argument type="service" id=".service_locator.kxeRoTE"/>
     </service>
     <service id="api_platform.swagger.normalizer.api_gateway.inner" class="ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer" public="false">
       <argument type="service" id="api_platform.metadata.resource.metadata_factory.cached"/>
@@ -5748,7 +5756,7 @@
     <service id="lexik_jwt_authentication.encoder" alias="lexik_jwt_authentication.encoder.lcobucci" public="true"/>
     <service id="Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface" alias="lexik_jwt_authentication.encoder.lcobucci"/>
     <service id="lexik_jwt_authentication.key_loader" alias="lexik_jwt_authentication.key_loader.raw" public="true"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.eIIhLHg"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.kxeRoTE"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem" public="false"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>

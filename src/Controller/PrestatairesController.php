@@ -15,6 +15,8 @@ use App\Entity\Compte;
 use App\Entity\User;
 use App\Form\CompteType;
 use App\Form\UserType;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @Route("/prestataires")
@@ -36,7 +38,7 @@ class PrestatairesController extends AbstractController
     /**
      * @Route("/new", name="prestataires_new", methods={"GET","POST"})
      */
-    public function new(Request $request,UserPasswordEncoderInterface $PE,SerializerInterface $ser)
+    public function new(KernelInterface $kernel,Request $request,UserPasswordEncoderInterface $PE,SerializerInterface $ser)
     {
         $data = $request->request->all();
 
@@ -58,6 +60,17 @@ class PrestatairesController extends AbstractController
             $prestataire ->setMatricule($mat);
             $prestataire ->setAdressePrest($request->request->get('adressPrest'));
             $prestataire ->setStatusPrest("dblked");
+
+            $image = ($request->files->get('image'));
+            $imageOriginalName = $image->getClientOriginalName();
+            $destination = $kernel->getProjectDir().'/public/uploads';
+            $prestataire->setImage($imageOriginalName);
+            $extension = $image->getClientOriginalExtension();
+            $valid_extension = ['png','jpg','jpeg','gif'];
+                if(!in_array($extension,$valid_extension)){
+                    throw new HttpException(500,'Votre fichier ne semble pas etre une image');
+                }
+            $image->move($destination,$imageOriginalName);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($prestataire);
