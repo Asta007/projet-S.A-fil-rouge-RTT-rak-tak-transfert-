@@ -15,6 +15,7 @@ use App\Entity\Compte;
 use App\Entity\User;
 use App\Form\CompteType;
 use App\Form\UserType;
+use Dompdf\Dompdf;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -36,6 +37,15 @@ class PrestatairesController extends AbstractController
     }//done
 
     /**
+     * @Route("/thepdf", name="prestataires_thepdf", methods={"GET"})
+     */
+    public function thepdf()
+    {
+        return $this->render('pdf_model.html.twig');
+
+    }
+
+    /**
      * @Route("/new", name="prestataires_new", methods={"GET","POST"})
      */
     public function new(KernelInterface $kernel,Request $request,UserPasswordEncoderInterface $PE,SerializerInterface $ser)
@@ -54,7 +64,7 @@ class PrestatairesController extends AbstractController
         
         $mat .="-P".$maxid; 
     
-        $prestataire = new Prestataires();
+        $prestataire = new Prestataires;
             $form = $this->createForm(PrestatairesType::class,$prestataire);
             $form->submit($data);
             $prestataire ->setMatricule($mat);
@@ -62,6 +72,9 @@ class PrestatairesController extends AbstractController
             $prestataire ->setStatusPrest("dblked");
 
             $image = ($request->files->get('image'));
+            if($image == null){
+                throw new HttpException(500,"Veillez choisir une image pour votre entreprise");
+            }
             $imageOriginalName = $image->getClientOriginalName();
             $destination = $kernel->getProjectDir().'/public/uploads';
             $prestataire->setImage($imageOriginalName);
@@ -74,6 +87,7 @@ class PrestatairesController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($prestataire);
+        var_dump($prestataire);
 
         // Creation du compte pour le prestataire Prestataire ==================================
 
@@ -96,7 +110,7 @@ class PrestatairesController extends AbstractController
             $compte->setSolde(0);
 
         $entityManager->persist($compte);
-
+        var_dump($compte);
         // Creation du user admin du Prestataire ==================================
         
         $user = new User();
@@ -110,7 +124,7 @@ class PrestatairesController extends AbstractController
             $user->setStatusUser("dblcked");
 
         $entityManager->persist($user);
-        $entityManager->flush();
+        // $entityManager->flush();
 
         $response = new Response("le Partenaire ".($request->request->get('denomination'))." a éte ajouter avec succes ainsi que son compte et son representant legal");
         return($response);
@@ -123,8 +137,8 @@ class PrestatairesController extends AbstractController
     public function show(prestatairesRepository $prestatairesRepository,$id )
     {
         $result = $prestatairesRepository->find($id);
-        $result = $this->get('serializer')->serialize($result,'json');
-        $response = new Response($result);
+        $resultes = $this->get('serializer')->serialize($result,'json');
+        $response = new Response($resultes);
         return($response);
 
     }//done
@@ -168,31 +182,44 @@ class PrestatairesController extends AbstractController
      */
     public function dblock(Prestataires $prestataire, Request $request)
     {
-
+        
         $data = $request->request->all();
         $form = $this->createForm(PrestatairesType::class,$prestataire);
         $form->submit($data);
         $prestataire->setStatusPrest("dblcked");
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->flush();
-
+        // $entityManager->flush();
         $response = new Response(($request->request->get('matricule'))." / ".($request->request->get('denomination'))." a éte débloqué avec succes");
         return($response);
-
+        
     }// done
-
-
+    
     /**
-     * @Route("/{id}", name="prestataires_delete", methods={"DELETE"})
+     * @Route("/pdf/{id}", name="generate_pdf", methods={"GET","POST"})
      */
-    public function delete(Request $request, Prestataires $prestataire)
-    {
-        if ($this->isCsrfTokenValid('delete'.$prestataire->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($prestataire);
-            $entityManager->flush();
-        }
+    public function pdf($id){
 
-        return $this->redirectToRoute('prestataires_index');
+        $dompdf = new Dompdf();
+        
+        // $repoprest = $this->getDoctrine()->getRepository(Prestataires::class)->find($id);
+        // $denome = $repoprest->getDenomination();
+        // $theid = $repoprest->getId();
+        // $repouser = $this->getDoctrine()->getRepository(User::class)->findByPrestataire($theid);
+        // $repouser = $repouser[0];
+        // $name = $repouser->getNom();
+        // $prenom = $repouser->getPrenom();
+        // $email = $repouser->getEmailUser();
+        // $adress = $repouser->getAdresseUser();
+        // $tel = $repouser->getTelephoneUser();
+        // $cni = $repouser->getCni();
+        
+        $date = date('d-m-y');
+        $html = $this->renderView('pdf_model.html.twig');
+        $dompdf->loadHtml($html);
+        $dompdf->render();
+        // $dompdf->stream("contrat_de partenariat (Wari_".$denome."pdf");
+        $dompdf->stream("contract.pdf");
+
+        return new Response ("teste");
     }
 }

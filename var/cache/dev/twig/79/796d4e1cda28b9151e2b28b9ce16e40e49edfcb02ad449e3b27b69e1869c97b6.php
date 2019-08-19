@@ -52,16 +52,16 @@ class __TwigTemplate_5ea4f15ab37d88ec86887568cb55c5a838c7805ea4acba8c916cf471705
         ";
         // line 6
         $this->displayBlock('stylesheets', $context, $blocks);
-        // line 7
+        // line 10
         echo "    </head>
     <body>
         ";
-        // line 9
+        // line 12
         $this->displayBlock('body', $context, $blocks);
-        // line 10
+        // line 13
         echo "        ";
         $this->displayBlock('javascripts', $context, $blocks);
-        // line 11
+        // line 14
         echo "    </body>
 </html>
 ";
@@ -90,12 +90,19 @@ class __TwigTemplate_5ea4f15ab37d88ec86887568cb55c5a838c7805ea4acba8c916cf471705
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02 = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->enter($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "stylesheets"));
 
+        // line 7
+        echo "            ";
+        // line 8
+        echo "            <link rel=\"stylesheet\" type=\"text/css\" href=\"";
+        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("pdf.css"), "html", null, true);
+        echo "\">
+        ";
         
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->leave($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof);
 
     }
 
-    // line 9
+    // line 12
     public function block_body($context, array $blocks = [])
     {
         $macros = $this->macros;
@@ -107,7 +114,7 @@ class __TwigTemplate_5ea4f15ab37d88ec86887568cb55c5a838c7805ea4acba8c916cf471705
 
     }
 
-    // line 10
+    // line 13
     public function block_javascripts($context, array $blocks = [])
     {
         $macros = $this->macros;
@@ -126,7 +133,7 @@ class __TwigTemplate_5ea4f15ab37d88ec86887568cb55c5a838c7805ea4acba8c916cf471705
 
     public function getDebugInfo()
     {
-        return array (  111 => 10,  99 => 9,  87 => 6,  74 => 5,  65 => 11,  62 => 10,  60 => 9,  56 => 7,  54 => 6,  50 => 5,  44 => 1,);
+        return array (  118 => 13,  106 => 12,  96 => 8,  94 => 7,  87 => 6,  74 => 5,  65 => 14,  62 => 13,  60 => 12,  56 => 10,  54 => 6,  50 => 5,  44 => 1,);
     }
 
     public function getSourceContext()
@@ -136,7 +143,10 @@ class __TwigTemplate_5ea4f15ab37d88ec86887568cb55c5a838c7805ea4acba8c916cf471705
     <head>
         <meta charset=\"UTF-8\">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            {# <link rel=\"stylesheet\" type=\"text/css\" href=\"pdf.css\"> #}
+            <link rel=\"stylesheet\" type=\"text/css\" href=\"{{ asset('pdf.css') }}\">
+        {% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}
