@@ -1,0 +1,70 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: auto
+        App\Entity\SystemUser:
+            algorithm: auto
+
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\SystemUser
+                property: email
+        # used to reload user from session & other features (e.g. switch_user)
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login:
+            pattern: ^/system_user/login
+            stateless: true
+            anonymous: true
+            json_login:
+                check_path: /system_user/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        
+        system:
+            pattern: ^/system_user
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+            
+        compte:
+            pattern: ^/compte/
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+        transaction:
+            pattern: ^/transactions/
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        
+        # main:
+        #     pattern: ^/system_user/login 
+        #     anonymous: true
+        #     json_login:
+        #         check_path: /system_user/login
+
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/system_user/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/System_user, roles: [ROLE_ADMINSYS, ROLE_SUPERADMINSYS]}
+        
+        - { path: ^/compte/new, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS]}
+        # - { path: ^/compte/, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS]}
+        
+        - { path: ^/prestataire/, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}
+        - { path: ^/prestataire/new, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}
+        - { path: ^/prestataire/edit, roles: [ROLE_ADMIN, ROLE_SUPERADMINSYS]}
+
+        - { path: ^/transactions, roles: [ROLE_CAISSIER, ROLE_SUPERADMINSYS,ROLE_ADMINSYS]}
+        # - { path: ^/transactions/, roles: ROLE_CAISSIER}
+        # - { path: ^/transcations/, roles: ROLE_CAISSIER}

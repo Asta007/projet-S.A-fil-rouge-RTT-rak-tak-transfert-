@@ -8,6 +8,7 @@ use App\Repository\CompteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Prestataires;
 use ApiPlatform\Core\Validator\ValidatorInterface;
@@ -29,7 +30,7 @@ class CompteController extends AbstractController
         $username = $security->getUser()->getUsername();
         ?> <p> <u> <em> <?php echo "conected as ".$username; ?>  </em></u> </p> <br> <?php
 
-        $response = new Response($result);
+        $response = new jsonResponse($result);
         return($response);
     }
 

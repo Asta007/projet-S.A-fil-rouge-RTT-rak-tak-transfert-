@@ -93,10 +93,9 @@ class __TwigTemplate_5ea4f15ab37d88ec86887568cb55c5a838c7805ea4acba8c916cf471705
         // line 7
         echo "            ";
         // line 8
-        echo "            <link rel=\"stylesheet\" type=\"text/css\" href=\"";
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("pdf.css"), "html", null, true);
-        echo "\">
-        ";
+        echo "            ";
+        // line 9
+        echo "        ";
         
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->leave($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof);
 
@@ -133,7 +132,7 @@ class __TwigTemplate_5ea4f15ab37d88ec86887568cb55c5a838c7805ea4acba8c916cf471705
 
     public function getDebugInfo()
     {
-        return array (  118 => 13,  106 => 12,  96 => 8,  94 => 7,  87 => 6,  74 => 5,  65 => 14,  62 => 13,  60 => 12,  56 => 10,  54 => 6,  50 => 5,  44 => 1,);
+        return array (  117 => 13,  105 => 12,  98 => 9,  96 => 8,  94 => 7,  87 => 6,  74 => 5,  65 => 14,  62 => 13,  60 => 12,  56 => 10,  54 => 6,  50 => 5,  44 => 1,);
     }
 
     public function getSourceContext()
@@ -145,7 +144,7 @@ class __TwigTemplate_5ea4f15ab37d88ec86887568cb55c5a838c7805ea4acba8c916cf471705
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
             {# <link rel=\"stylesheet\" type=\"text/css\" href=\"pdf.css\"> #}
-            <link rel=\"stylesheet\" type=\"text/css\" href=\"{{ asset('pdf.css') }}\">
+            {# <link rel=\"stylesheet\" type=\"text/css\" href=\"{{ asset('pdf.css') }}\"> #}
         {% endblock %}
     </head>
     <body>

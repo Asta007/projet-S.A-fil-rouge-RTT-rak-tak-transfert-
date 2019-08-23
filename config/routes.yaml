@@ -1,5 +1,5 @@
-system_login_check:
-    path: /system_user/login_check
+# system_login_check:
+#     path: /system_user/login_check
 
 #index:
 #    path: /

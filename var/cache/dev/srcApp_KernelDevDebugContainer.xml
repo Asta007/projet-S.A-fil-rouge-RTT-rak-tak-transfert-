@@ -2364,11 +2364,7 @@
     </service>
     <service id="security.authentication.manager" class="Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager" public="false">
       <argument type="iterator">
-        <argument type="service" id="security.authentication.provider.dao.login"/>
-        <argument type="service" id="security.authentication.provider.anonymous.login"/>
-        <argument type="service" id="security.authentication.provider.guard.system"/>
-        <argument type="service" id="security.authentication.provider.guard.compte"/>
-        <argument type="service" id="security.authentication.provider.guard.transaction"/>
+        <argument type="service" id="security.authentication.provider.anonymous.main"/>
       </argument>
       <argument>true</argument>
       <call method="setEventDispatcher">
@@ -2441,13 +2437,10 @@
       <argument type="service" id="security.role_hierarchy" on-invalid="null"/>
     </service>
     <service id="security.firewall.map" class="Symfony\Bundle\SecurityBundle\Security\FirewallMap" public="false">
-      <argument type="service" id=".service_locator.8dX3.4o"/>
+      <argument type="service" id=".service_locator.ko2dQVn"/>
       <argument type="iterator">
         <argument key="security.firewall.map.context.dev" type="service" id=".security.request_matcher.Iy.T22O"/>
-        <argument key="security.firewall.map.context.login" type="service" id=".security.request_matcher.LbS9eH6"/>
-        <argument key="security.firewall.map.context.system" type="service" id=".security.request_matcher.fqj_Oe6"/>
-        <argument key="security.firewall.map.context.compte" type="service" id=".security.request_matcher.hOLrgwd"/>
-        <argument key="security.firewall.map.context.transaction" type="service" id=".security.request_matcher.OzdveA9"/>
+        <argument key="security.firewall.map.context.main">null</argument>
       </argument>
     </service>
     <service id="security.firewall.context" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext" public="false" abstract="true">
@@ -2535,64 +2528,7 @@
       <argument type="service" id="security.authentication.retry_entry_point"/>
       <argument type="service" id="logger" on-invalid="null"/>
     </service>
-    <service id="security.access_map" class="Symfony\Component\Security\Http\AccessMap" public="false">
-      <call method="add">
-        <argument type="service" id=".security.request_matcher.aXo7JK2"/>
-        <argument type="collection">
-          <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
-        </argument>
-        <argument>null</argument>
-      </call>
-      <call method="add">
-        <argument type="service" id=".security.request_matcher.b2FjTXx"/>
-        <argument type="collection">
-          <argument>ROLE_ADMINSYS</argument>
-          <argument>ROLE_SUPERADMINSYS</argument>
-        </argument>
-        <argument>null</argument>
-      </call>
-      <call method="add">
-        <argument type="service" id=".security.request_matcher.xqb2aOE"/>
-        <argument type="collection">
-          <argument>ROLE_CAISSIER</argument>
-          <argument>ROLE_SUPERADMINSYS</argument>
-        </argument>
-        <argument>null</argument>
-      </call>
-      <call method="add">
-        <argument type="service" id=".security.request_matcher.yYkIdmg"/>
-        <argument type="collection">
-          <argument>ROLE_ADMIN</argument>
-          <argument>ROLE_SUPERADMINSYS</argument>
-        </argument>
-        <argument>null</argument>
-      </call>
-      <call method="add">
-        <argument type="service" id=".security.request_matcher.IIGVDtz"/>
-        <argument type="collection">
-          <argument>ROLE_ADMIN</argument>
-          <argument>ROLE_SUPERADMINSYS</argument>
-        </argument>
-        <argument>null</argument>
-      </call>
-      <call method="add">
-        <argument type="service" id=".security.request_matcher.kpDtXK_"/>
-        <argument type="collection">
-          <argument>ROLE_ADMIN</argument>
-          <argument>ROLE_SUPERADMINSYS</argument>
-        </argument>
-        <argument>null</argument>
-      </call>
-      <call method="add">
-        <argument type="service" id=".security.request_matcher.pXs_LH."/>
-        <argument type="collection">
-          <argument>ROLE_CAISSIER</argument>
-          <argument>ROLE_SUPERADMINSYS</argument>
-          <argument>ROLE_ADMINSYS</argument>
-        </argument>
-        <argument>null</argument>
-      </call>
-    </service>
+    <service id="security.access_map" class="Symfony\Component\Security\Http\AccessMap" public="false"/>
     <service id="security.context_listener" class="Symfony\Component\Security\Http\Firewall\ContextListener" public="false">
       <tag name="monolog.logger" channel="security"/>
       <argument type="service" id="security.token_storage"/>
@@ -2857,12 +2793,7 @@
     <service id="security.authentication.guard_handler" class="Symfony\Component\Security\Guard\GuardAuthenticatorHandler" public="false">
       <argument type="service" id="security.token_storage"/>
       <argument type="service" id="debug.event_dispatcher" on-invalid="null"/>
-      <argument type="collection">
-        <argument>login</argument>
-        <argument>system</argument>
-        <argument>compte</argument>
-        <argument>transaction</argument>
-      </argument>
+      <argument type="collection"/>
       <call method="setSessionAuthenticationStrategy">
         <argument type="service" id="security.authentication.session_strategy"/>
       </call>
@@ -2926,298 +2857,69 @@
       <argument>null</argument>
       <argument type="service" id="security.firewall.map.config.dev"/>
     </service>
-    <service id="security.firewall.map.config.login" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig" public="false">
-      <argument>login</argument>
+    <service id="security.firewall.map.config.main" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig" public="false">
+      <argument>main</argument>
       <argument>security.user_checker</argument>
-      <argument>.security.request_matcher.LbS9eH6</argument>
-      <argument>true</argument>
-      <argument>true</argument>
-      <argument>security.user.provider.concrete.app_user_provider</argument>
       <argument>null</argument>
+      <argument>true</argument>
+      <argument>false</argument>
+      <argument>security.user.provider.concrete.app_user_provider</argument>
+      <argument>main</argument>
       <argument>null</argument>
       <argument>null</argument>
       <argument>null</argument>
       <argument type="collection">
-        <argument>json_login</argument>
         <argument>anonymous</argument>
       </argument>
       <argument>null</argument>
     </service>
-    <service id=".security.request_matcher.LbS9eH6" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/system_user/login</argument>
-    </service>
-    <service id="security.authentication.provider.dao.login" class="Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider" public="false">
-      <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
-      <argument type="service" id="security.user_checker"/>
-      <argument>login</argument>
-      <argument type="service" id="security.encoder_factory.generic"/>
-      <argument>true</argument>
-    </service>
-    <service id="security.authentication.success_handler.login.json_login" class="Symfony\Component\Security\Http\Authentication\CustomAuthenticationSuccessHandler" public="false">
-      <argument type="service" id="lexik_jwt_authentication.handler.authentication_success"/>
-      <argument type="collection"/>
-      <argument>login</argument>
-    </service>
-    <service id="security.authentication.failure_handler.login.json_login" class="Symfony\Component\Security\Http\Authentication\CustomAuthenticationFailureHandler" public="false">
-      <argument type="service" id="lexik_jwt_authentication.handler.authentication_failure"/>
-      <argument type="collection"/>
-    </service>
-    <service id="security.authentication.listener.json.login" class="Symfony\Component\Security\Http\Firewall\UsernamePasswordJsonAuthenticationListener" public="false">
+    <service id="security.context_listener.0" class="Symfony\Component\Security\Http\Firewall\ContextListener" public="false">
       <argument type="service" id="security.token_storage"/>
-      <argument type="service" id="security.authentication.manager"/>
-      <argument type="service" id="security.http_utils"/>
-      <argument>login</argument>
-      <argument type="service" id="security.authentication.success_handler.login.json_login"/>
-      <argument type="service" id="security.authentication.failure_handler.login.json_login"/>
-      <argument type="collection">
-        <argument key="check_path">/system_user/login_check</argument>
-        <argument key="use_forward">false</argument>
-        <argument key="require_previous_session">false</argument>
-        <argument key="username_path">username</argument>
-        <argument key="password_path">password</argument>
+      <argument type="iterator">
+        <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
       </argument>
+      <argument>main</argument>
       <argument type="service" id="logger" on-invalid="null"/>
       <argument type="service" id="debug.event_dispatcher" on-invalid="null"/>
-      <argument type="service" id="property_accessor" on-invalid="null"/>
-      <call method="setSessionAuthenticationStrategy">
-        <argument type="service" id="security.authentication.session_strategy_noop"/>
-      </call>
+      <argument type="service" id="security.authentication.trust_resolver"/>
     </service>
-    <service id="security.authentication.listener.anonymous.login" class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
+    <service id="security.authentication.listener.anonymous.main" class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
       <argument type="service" id="security.token_storage"/>
       <argument>%container.build_hash%</argument>
       <argument type="service" id="logger" on-invalid="null"/>
       <argument type="service" id="security.authentication.manager"/>
     </service>
-    <service id="security.authentication.provider.anonymous.login" class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
+    <service id="security.authentication.provider.anonymous.main" class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
       <argument>%container.build_hash%</argument>
     </service>
-    <service id="security.exception_listener.login" class="Symfony\Component\Security\Http\Firewall\ExceptionListener" public="false">
+    <service id="security.exception_listener.main" class="Symfony\Component\Security\Http\Firewall\ExceptionListener" public="false">
       <argument type="service" id="security.token_storage"/>
       <argument type="service" id="security.authentication.trust_resolver"/>
       <argument type="service" id="security.http_utils"/>
-      <argument>login</argument>
+      <argument>main</argument>
       <argument>null</argument>
       <argument>null</argument>
       <argument>null</argument>
       <argument type="service" id="logger" on-invalid="null"/>
-      <argument>true</argument>
+      <argument>false</argument>
     </service>
-    <service id="security.firewall.map.context.login" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext" public="false">
+    <service id="security.firewall.map.context.main" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext" public="false">
       <argument type="iterator">
         <argument type="service" id="security.channel_listener"/>
-        <argument type="service" id="security.authentication.listener.json.login"/>
-        <argument type="service" id="security.authentication.listener.anonymous.login"/>
+        <argument type="service" id="security.context_listener.0"/>
+        <argument type="service" id="security.authentication.listener.anonymous.main"/>
         <argument type="service" id="security.access_listener"/>
       </argument>
-      <argument type="service" id="security.exception_listener.login"/>
+      <argument type="service" id="security.exception_listener.main"/>
       <argument>null</argument>
-      <argument type="service" id="security.firewall.map.config.login"/>
+      <argument type="service" id="security.firewall.map.config.main"/>
     </service>
-    <service id="security.firewall.map.config.system" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig" public="false">
-      <argument>system</argument>
-      <argument>security.user_checker</argument>
-      <argument>.security.request_matcher.fqj_Oe6</argument>
-      <argument>true</argument>
-      <argument>true</argument>
-      <argument>security.user.provider.concrete.app_user_provider</argument>
-      <argument>null</argument>
-      <argument>lexik_jwt_authentication.jwt_token_authenticator</argument>
-      <argument>null</argument>
-      <argument>null</argument>
-      <argument type="collection">
-        <argument>guard</argument>
-      </argument>
-      <argument>null</argument>
-    </service>
-    <service id=".security.request_matcher.fqj_Oe6" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/system_user</argument>
-    </service>
-    <service id="security.authentication.provider.guard.system" class="Symfony\Component\Security\Guard\Provider\GuardAuthenticationProvider" public="false">
-      <argument type="iterator">
-        <argument type="service" id="lexik_jwt_authentication.security.guard.jwt_token_authenticator"/>
-      </argument>
-      <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
-      <argument>system</argument>
-      <argument type="service" id="security.user_checker"/>
-    </service>
-    <service id="security.authentication.listener.guard.system" class="Symfony\Component\Security\Guard\Firewall\GuardAuthenticationListener" public="false">
-      <tag name="security.remember_me_aware" id="system" provider="security.user.provider.concrete.app_user_provider"/>
-      <argument type="service" id="security.authentication.guard_handler"/>
-      <argument type="service" id="security.authentication.manager"/>
-      <argument>system</argument>
-      <argument type="iterator">
-        <argument type="service" id="lexik_jwt_authentication.security.guard.jwt_token_authenticator"/>
-      </argument>
-      <argument type="service" id="logger" on-invalid="null"/>
-    </service>
-    <service id="security.exception_listener.system" class="Symfony\Component\Security\Http\Firewall\ExceptionListener" public="false">
-      <argument type="service" id="security.token_storage"/>
-      <argument type="service" id="security.authentication.trust_resolver"/>
-      <argument type="service" id="security.http_utils"/>
-      <argument>system</argument>
-      <argument type="service" id="lexik_jwt_authentication.security.guard.jwt_token_authenticator"/>
-      <argument>null</argument>
-      <argument>null</argument>
-      <argument type="service" id="logger" on-invalid="null"/>
-      <argument>true</argument>
-    </service>
-    <service id="security.firewall.map.context.system" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext" public="false">
-      <argument type="iterator">
-        <argument type="service" id="security.channel_listener"/>
-        <argument type="service" id="security.authentication.listener.guard.system"/>
-        <argument type="service" id="security.access_listener"/>
-      </argument>
-      <argument type="service" id="security.exception_listener.system"/>
-      <argument>null</argument>
-      <argument type="service" id="security.firewall.map.config.system"/>
-    </service>
-    <service id="security.firewall.map.config.compte" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig" public="false">
-      <argument>compte</argument>
-      <argument>security.user_checker</argument>
-      <argument>.security.request_matcher.hOLrgwd</argument>
-      <argument>true</argument>
-      <argument>true</argument>
-      <argument>security.user.provider.concrete.app_user_provider</argument>
-      <argument>null</argument>
-      <argument>lexik_jwt_authentication.jwt_token_authenticator</argument>
-      <argument>null</argument>
-      <argument>null</argument>
-      <argument type="collection">
-        <argument>guard</argument>
-      </argument>
-      <argument>null</argument>
-    </service>
-    <service id=".security.request_matcher.hOLrgwd" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/compte/</argument>
-    </service>
-    <service id="security.authentication.provider.guard.compte" class="Symfony\Component\Security\Guard\Provider\GuardAuthenticationProvider" public="false">
-      <argument type="iterator">
-        <argument type="service" id="lexik_jwt_authentication.security.guard.jwt_token_authenticator"/>
-      </argument>
-      <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
-      <argument>compte</argument>
-      <argument type="service" id="security.user_checker"/>
-    </service>
-    <service id="security.authentication.listener.guard.compte" class="Symfony\Component\Security\Guard\Firewall\GuardAuthenticationListener" public="false">
-      <tag name="security.remember_me_aware" id="compte" provider="security.user.provider.concrete.app_user_provider"/>
-      <argument type="service" id="security.authentication.guard_handler"/>
-      <argument type="service" id="security.authentication.manager"/>
-      <argument>compte</argument>
-      <argument type="iterator">
-        <argument type="service" id="lexik_jwt_authentication.security.guard.jwt_token_authenticator"/>
-      </argument>
-      <argument type="service" id="logger" on-invalid="null"/>
-    </service>
-    <service id="security.exception_listener.compte" class="Symfony\Component\Security\Http\Firewall\ExceptionListener" public="false">
-      <argument type="service" id="security.token_storage"/>
-      <argument type="service" id="security.authentication.trust_resolver"/>
-      <argument type="service" id="security.http_utils"/>
-      <argument>compte</argument>
-      <argument type="service" id="lexik_jwt_authentication.security.guard.jwt_token_authenticator"/>
-      <argument>null</argument>
-      <argument>null</argument>
-      <argument type="service" id="logger" on-invalid="null"/>
-      <argument>true</argument>
-    </service>
-    <service id="security.firewall.map.context.compte" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext" public="false">
-      <argument type="iterator">
-        <argument type="service" id="security.channel_listener"/>
-        <argument type="service" id="security.authentication.listener.guard.compte"/>
-        <argument type="service" id="security.access_listener"/>
-      </argument>
-      <argument type="service" id="security.exception_listener.compte"/>
-      <argument>null</argument>
-      <argument type="service" id="security.firewall.map.config.compte"/>
-    </service>
-    <service id="security.firewall.map.config.transaction" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig" public="false">
-      <argument>transaction</argument>
-      <argument>security.user_checker</argument>
-      <argument>.security.request_matcher.OzdveA9</argument>
-      <argument>true</argument>
-      <argument>true</argument>
-      <argument>security.user.provider.concrete.app_user_provider</argument>
-      <argument>null</argument>
-      <argument>lexik_jwt_authentication.jwt_token_authenticator</argument>
-      <argument>null</argument>
-      <argument>null</argument>
-      <argument type="collection">
-        <argument>guard</argument>
-      </argument>
-      <argument>null</argument>
-    </service>
-    <service id=".security.request_matcher.OzdveA9" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/transactions/</argument>
-    </service>
-    <service id="security.authentication.provider.guard.transaction" class="Symfony\Component\Security\Guard\Provider\GuardAuthenticationProvider" public="false">
-      <argument type="iterator">
-        <argument type="service" id="lexik_jwt_authentication.security.guard.jwt_token_authenticator"/>
-      </argument>
-      <argument type="service" id="security.user.provider.concrete.app_user_provider"/>
-      <argument>transaction</argument>
-      <argument type="service" id="security.user_checker"/>
-    </service>
-    <service id="security.authentication.listener.guard.transaction" class="Symfony\Component\Security\Guard\Firewall\GuardAuthenticationListener" public="false">
-      <tag name="security.remember_me_aware" id="transaction" provider="security.user.provider.concrete.app_user_provider"/>
-      <argument type="service" id="security.authentication.guard_handler"/>
-      <argument type="service" id="security.authentication.manager"/>
-      <argument>transaction</argument>
-      <argument type="iterator">
-        <argument type="service" id="lexik_jwt_authentication.security.guard.jwt_token_authenticator"/>
-      </argument>
-      <argument type="service" id="logger" on-invalid="null"/>
-    </service>
-    <service id="security.exception_listener.transaction" class="Symfony\Component\Security\Http\Firewall\ExceptionListener" public="false">
-      <argument type="service" id="security.token_storage"/>
-      <argument type="service" id="security.authentication.trust_resolver"/>
-      <argument type="service" id="security.http_utils"/>
-      <argument>transaction</argument>
-      <argument type="service" id="lexik_jwt_authentication.security.guard.jwt_token_authenticator"/>
-      <argument>null</argument>
-      <argument>null</argument>
-      <argument type="service" id="logger" on-invalid="null"/>
-      <argument>true</argument>
-    </service>
-    <service id="security.firewall.map.context.transaction" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext" public="false">
-      <argument type="iterator">
-        <argument type="service" id="security.channel_listener"/>
-        <argument type="service" id="security.authentication.listener.guard.transaction"/>
-        <argument type="service" id="security.access_listener"/>
-      </argument>
-      <argument type="service" id="security.exception_listener.transaction"/>
-      <argument>null</argument>
-      <argument type="service" id="security.firewall.map.config.transaction"/>
-    </service>
-    <service id=".service_locator.8dX3.4o" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.ko2dQVn" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
-        <argument key="security.firewall.map.context.compte" type="service" id="security.firewall.map.context.compte"/>
         <argument key="security.firewall.map.context.dev" type="service" id="security.firewall.map.context.dev"/>
-        <argument key="security.firewall.map.context.login" type="service" id="security.firewall.map.context.login"/>
-        <argument key="security.firewall.map.context.system" type="service" id="security.firewall.map.context.system"/>
-        <argument key="security.firewall.map.context.transaction" type="service" id="security.firewall.map.context.transaction"/>
+        <argument key="security.firewall.map.context.main" type="service" id="security.firewall.map.context.main"/>
       </argument>
-    </service>
-    <service id=".security.request_matcher.aXo7JK2" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/system_user/login</argument>
-    </service>
-    <service id=".security.request_matcher.b2FjTXx" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/System_user</argument>
-    </service>
-    <service id=".security.request_matcher.xqb2aOE" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/compte/new</argument>
-    </service>
-    <service id=".security.request_matcher.yYkIdmg" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/prestataire/</argument>
-    </service>
-    <service id=".security.request_matcher.IIGVDtz" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/prestataire/new</argument>
-    </service>
-    <service id=".security.request_matcher.kpDtXK_" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/prestataire/edit</argument>
-    </service>
-    <service id=".security.request_matcher.pXs_LH." class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/transactions</argument>
     </service>
     <service id="security.command.user_password_encoder" class="Symfony\Bundle\SecurityBundle\Command\UserPasswordEncoderCommand" public="false">
       <tag name="console.command" command="security:encode-password"/>
@@ -5000,6 +4702,13 @@
         <argument key="systemUserRepository" type="service" id="App\Repository\SystemUserRepository"/>
       </argument>
     </service>
+    <service id=".service_locator.509HhZw" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="jwt" type="service" id="lexik_jwt_authentication.encoder.lcobucci"/>
+        <argument key="passencoder" type="service" id="security.user_password_encoder.generic"/>
+      </argument>
+    </service>
     <service id=".service_locator.YlOpa1d" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -5047,7 +4756,7 @@
         <argument key="userRepository" type="service" id="App\Repository\UserRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.jhdwyFA" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.awf40j9" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\CompteController::index" type="service" id=".service_locator.pDb1k1s"/>
@@ -5067,6 +4776,7 @@
         <argument key="App\Controller\SystemUserController::deblock" type="service" id=".service_locator.xcOLqs6"/>
         <argument key="App\Controller\SystemUserController::edit" type="service" id=".service_locator.2qCGKeD"/>
         <argument key="App\Controller\SystemUserController::index" type="service" id=".service_locator.A7RSt8q"/>
+        <argument key="App\Controller\SystemUserController::login" type="service" id=".service_locator.509HhZw"/>
         <argument key="App\Controller\SystemUserController::new" type="service" id=".service_locator.YrB6OhQ"/>
         <argument key="App\Controller\SystemUserController::show" type="service" id=".service_locator.xcOLqs6"/>
         <argument key="App\Controller\TransactionsController::archiver" type="service" id=".service_locator.TpB3x5u"/>
@@ -5095,6 +4805,7 @@
         <argument key="App\Controller\SystemUserController:deblock" type="service" id=".service_locator.xcOLqs6"/>
         <argument key="App\Controller\SystemUserController:edit" type="service" id=".service_locator.2qCGKeD"/>
         <argument key="App\Controller\SystemUserController:index" type="service" id=".service_locator.A7RSt8q"/>
+        <argument key="App\Controller\SystemUserController:login" type="service" id=".service_locator.509HhZw"/>
         <argument key="App\Controller\SystemUserController:new" type="service" id=".service_locator.YrB6OhQ"/>
         <argument key="App\Controller\SystemUserController:show" type="service" id=".service_locator.xcOLqs6"/>
         <argument key="App\Controller\TransactionsController:archiver" type="service" id=".service_locator.TpB3x5u"/>
@@ -5394,12 +5105,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
-      <argument type="service" id=".service_locator.jhdwyFA"/>
+      <argument type="service" id=".service_locator.awf40j9"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver" public="false"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver" public="false">
-      <argument type="service" id=".service_locator.jhdwyFA"/>
+      <argument type="service" id=".service_locator.awf40j9"/>
     </service>
     <service id="api_platform.swagger.normalizer.api_gateway.inner" class="ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer" public="false">
       <argument type="service" id="api_platform.metadata.resource.metadata_factory.cached"/>
@@ -5674,14 +5385,8 @@
     <service id="Symfony\Component\Security\Guard\GuardAuthenticatorHandler" alias="security.authentication.guard_handler" public="false"/>
     <service id="security.firewall" alias="debug.security.firewall" public="false"/>
     <service id="Symfony\Component\Security\Core\User\UserProviderInterface" alias="security.user.provider.concrete.app_user_provider"/>
-    <service id="security.authentication.session_strategy.login" alias="security.authentication.session_strategy_noop"/>
-    <service id="security.user_checker.login" alias="security.user_checker" public="false"/>
-    <service id="security.authentication.session_strategy.system" alias="security.authentication.session_strategy_noop"/>
-    <service id="security.user_checker.system" alias="security.user_checker" public="false"/>
-    <service id="security.authentication.session_strategy.compte" alias="security.authentication.session_strategy_noop"/>
-    <service id="security.user_checker.compte" alias="security.user_checker" public="false"/>
-    <service id="security.authentication.session_strategy.transaction" alias="security.authentication.session_strategy_noop"/>
-    <service id="security.user_checker.transaction" alias="security.user_checker" public="false"/>
+    <service id="security.authentication.session_strategy.main" alias="security.authentication.session_strategy"/>
+    <service id="security.user_checker.main" alias="security.user_checker" public="false"/>
     <service id="Symfony\Component\Security\Core\User\UserCheckerInterface" alias="security.user_checker" public="false"/>
     <service id="Doctrine\DBAL\Driver\Connection" alias="doctrine.dbal.default_connection" public="false"/>
     <service id="Doctrine\DBAL\Connection" alias="doctrine.dbal.default_connection" public="false"/>
@@ -5754,7 +5459,7 @@
     <service id="lexik_jwt_authentication.encoder" alias="lexik_jwt_authentication.encoder.lcobucci" public="true"/>
     <service id="Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface" alias="lexik_jwt_authentication.encoder.lcobucci"/>
     <service id="lexik_jwt_authentication.key_loader" alias="lexik_jwt_authentication.key_loader.raw" public="true"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.jhdwyFA"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.awf40j9"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem" public="false"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>

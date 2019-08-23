@@ -8,6 +8,7 @@ use App\Repository\PrestatairesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -32,7 +33,9 @@ class PrestatairesController extends AbstractController
         $result = $prestatairesRepository->findAll();
         $result = $this->get('serializer')->serialize($result,'json');
         $response = new Response($result);
-        return($response);
+        return ($response);
+        //return $this->redirectToRoute('generate_pdf',['id' => 10]) ;
+
 
     }//done
 
@@ -87,7 +90,7 @@ class PrestatairesController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($prestataire);
-        var_dump($prestataire);
+        // var_dump($prestataire);
 
         // Creation du compte pour le prestataire Prestataire ==================================
 
@@ -110,7 +113,7 @@ class PrestatairesController extends AbstractController
             $compte->setSolde(0);
 
         $entityManager->persist($compte);
-        var_dump($compte);
+        // var_dump($compte);
         // Creation du user admin du Prestataire ==================================
         
         $user = new User();
@@ -124,10 +127,15 @@ class PrestatairesController extends AbstractController
             $user->setStatusUser("dblcked");
 
         $entityManager->persist($user);
-        // $entityManager->flush();
+        $entityManager->flush();
 
-        $response = new Response("le Partenaire ".($request->request->get('denomination'))." a éte ajouter avec succes ainsi que son compte et son representant legal");
-        return($response);
+        // var_dump($idDuPrest);
+        // $response = new Response("le Partenaire ".($request->request->get('denomination'))." a éte ajouter avec succes ainsi que son compte et son representant legal");
+        // return($response);
+
+        $newid = ($prestataire->getId());
+        // var_dump($idDuPrest);
+        return $this->redirectToRoute('generate_pdf',['id' => $newid]) ;
 
     }//done
 
@@ -201,24 +209,41 @@ class PrestatairesController extends AbstractController
 
         $dompdf = new Dompdf();
         
-        // $repoprest = $this->getDoctrine()->getRepository(Prestataires::class)->find($id);
-        // $denome = $repoprest->getDenomination();
-        // $theid = $repoprest->getId();
-        // $repouser = $this->getDoctrine()->getRepository(User::class)->findByPrestataire($theid);
-        // $repouser = $repouser[0];
-        // $name = $repouser->getNom();
-        // $prenom = $repouser->getPrenom();
-        // $email = $repouser->getEmailUser();
-        // $adress = $repouser->getAdresseUser();
-        // $tel = $repouser->getTelephoneUser();
-        // $cni = $repouser->getCni();
+        $repoprest = $this->getDoctrine()->getRepository(Prestataires::class)->find($id);
+        
+        if($repoprest == null){
+            throw new HttpException(500,'prestataire not found');
+        }
+
+        $denome = $repoprest->getDenomination();
+        $theid = $repoprest->getId();
+        $repouser = $this->getDoctrine()->getRepository(User::class)->findByPrestataire($theid);
+        
+        
+        if($repouser == null){
+            throw new HttpException(500,'user not found');
+        }
+        
+        $repouser = $repouser[0];
+        $name = $repouser->getNom();
+        $prenom = $repouser->getPrenom();
+        $email = $repouser->getEmailUser();
+        $adress = $repouser->getAdresseUser();
+        $tel = $repouser->getTelephoneUser();
+        $cni = $repouser->getCni();
         
         $date = date('d-m-y');
-        $html = $this->renderView('pdf_model.html.twig');
+        $html = $this->renderView('pdf_model.html.twig',[
+            'data' => $repouser,
+            'date' => $date,
+            'denome' => $denome
+            ]);
+
         $dompdf->loadHtml($html);
         $dompdf->render();
-        // $dompdf->stream("contrat_de partenariat (Wari_".$denome."pdf");
-        $dompdf->stream("contract.pdf");
+        $dompdf->stream("contrat_de partenariat (Wari_".$denome."pdf", [
+            "Attachment" => false
+        ]);
 
         return new Response ("teste");
     }

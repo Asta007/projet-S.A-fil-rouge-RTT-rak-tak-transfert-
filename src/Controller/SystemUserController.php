@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\SystemUser;
 use App\Form\SystemUserType;
 use App\Repository\SystemUserRepository;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -158,18 +160,43 @@ class SystemUserController extends AbstractController
      /**
      * @Route("/login", name="login", methods={"POST"})
      */
-    public function login(Request $request)
+    public function login(Request $request,UserPasswordEncoderInterface $passencoder,JWTEncoderInterface $jwt)
     {
-        $user = $request->getUser();
-        var_dump($user);
-        $req = $request->headers->get('X-API-TOKEN');
-        var_dump($req);
+        $req = $request->request->all();
+        $email = $req['username'];
+        $pass = $req['password'];
 
-        // return $this->json([
-        //     'username' => $user->getUsername(),
-        //     'roles' => $user->getRoles()
-        // ]);
+        $user_sys_repo = $this->getDoctrine()->getRepository(SystemUser::class)->findOneByEmail($email);
 
-        return $this->json("test");
+        // var_dump($user_sys_repo);
+
+        if($user_sys_repo !== null){
+            $user_status = $user_sys_repo->getStatus();
+            if($user_status == "blcked"){
+                throw new HttpException(500, "user actuellement blocké : contacter votre admin  systeme");
+            }
+        }
+        else{
+            throw new HttpException(500,"user not found");
+        }
+        
+        $isValid = $passencoder->isPasswordValid($user_sys_repo,$pass);
+        if($isValid == true){
+            $token = $jwt->encode([
+                'id' => $user_sys_repo->getId(),
+                'email' => $user_sys_repo->getEmail(),
+                'role' => $user_sys_repo->getRoles(),
+                'nom' => $user_sys_repo->getNom(),
+                'prenom' => $user_sys_repo->getPrenom(),
+                'telephone' => $user_sys_repo->getTelephone(),
+                'status' => $user_sys_repo->getStatus()
+            ]);
+        }
+        else{
+            throw new HttpException(401,'bad Cridentials : check please your entries !');
+        }
+
+        return new Response ($this->get('serializer')->serialize($token,'json'));
+
     }
 }

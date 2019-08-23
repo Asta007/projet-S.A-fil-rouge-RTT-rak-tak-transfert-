@@ -1,4 +1,94 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            {# <link rel="stylesheet" type="text/css" href="pdf.css"> #}
+            {# <link rel="stylesheet" type="text/css" href="{{ asset('pdf.css') }}"> #}
+        {% endblock %}
+
+        <style>
+            *{
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+            #header{
+                background-color: #c00000;
+                padding: 10px;
+            }
+
+
+            #header h2{
+                color:#fff;
+            }
+
+            #header p{
+                color:#fff;
+                margin-top: 5px;
+            }
+
+            #content{
+                width:90%;
+                margin: auto;
+            }
+
+            #intro{
+                margin-top: 10px;
+                margin-bottom: 40px;
+                font-size: 20px;
+                text-align: justify;
+            }
+
+            #legal{
+                font-size: 16px;
+                color:#c00000;
+                margin-bottom: 10px;
+            }
+
+            table{
+                border-collapse: collapse;
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            table tr,th,td{
+                height:30px;
+                border:solid gray 1px;
+                text-align: center;
+            }
+
+            table td{
+
+            }
+
+            table th{
+                background-color: #dbdbdb;
+            }
+
+            #nb{
+                font-size: 12px;
+                text-align: right;
+            }
+
+            #articles{
+                margin-top: 40px;
+                margin-bottom: 20px;
+            }
+
+            #articles p{
+                margin-top: 20px;
+                color:#333;
+            }
+
+            #direc{
+                text-align: right;
+            }
+        </style>
+    </head>
+    <body>
 
 {% block body %}
 
@@ -7,7 +97,7 @@
         CONTRAT DE PARTENARIAT <br>
     </h2>
     
-    <p>Conclut à  Dakar le : {date} </p>
+    <p>Conclut à  Dakar le : {{date}} </p>
 </div>
 
 <br>
@@ -15,7 +105,7 @@
 <div id="content">
     <div id="intro">
         <p>
-            Par cette present document nous le groupe Wari attestons lier une relation de partaneriat avec l'entreprise <strong> {denome} </strong> que voici compte tenu
+            Par cette present document nous le groupe Wari attestons lier une relation de partaneriat avec l'entreprise <strong> {{denome}} </strong> que voici compte tenu
             de nos centre d'interet convergeant dans le cadre du transfert d'argent. <br>
             a cette effet nous somme desormé en etroite collaboration et regis par des regles de vie dont la transgression ne manquera pas de faire l'objet de sanction adecquoites.
         </p>
@@ -33,12 +123,12 @@
             <th> Telephone </th>
         </tr>
         <tr>
-            <td> Asta </td>
-            <td> Ababacar </td>
-            <td> asta.hb2xy@gmail.com </td>
-            <td> guediawaye </td>
-            <td> 12345645 </td>
-            <td> 784568795 </td>
+            <td> {{data.nom}}</td>
+            <td> {{data.prenom}}</td>
+            <td> {{data.emailUser}}</td>
+            <td> {{data.adresseUser}}</td>
+            <td> {{data.cni}}</td>
+            <td> {{data.telephoneUser}}</td>
         </tr>
     </table>
 
@@ -74,3 +164,5 @@
 
 </div>
 {% endblock %}
+</body>
+</html>
